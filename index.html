@@ -1,100 +1,552 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Reward Unlocked</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reward Portal</title>
   <style>
+    :root{
+      --bg1:#070612;
+      --bg2:#120a2b;
+      --card:rgba(16,14,32,.72);
+      --stroke:rgba(170,120,255,.22);
+      --glow:rgba(170,120,255,.28);
+      --txt:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --accent:#a855f7;
+      --accent2:#22d3ee;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --warn:#fbbf24;
+    }
+
+    *{box-sizing:border-box}
     body{
       margin:0;
-      background: radial-gradient(circle at top, #2a145a, #0b0b14 60%);
-      color:#fff;
-      font-family: Arial, sans-serif;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      color:var(--txt);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 700px at 20% -10%, rgba(168,85,247,.35), transparent 55%),
+        radial-gradient(900px 700px at 110% 20%, rgba(34,211,238,.25), transparent 55%),
+        radial-gradient(700px 600px at 30% 120%, rgba(34,197,94,.12), transparent 55%),
+        linear-gradient(160deg, var(--bg2), var(--bg1));
       min-height:100vh;
+      overflow:hidden;
+    }
+
+    /* moving aurora */
+    .aurora{
+      position:fixed; inset:-20%;
+      background:
+        radial-gradient(closest-side, rgba(168,85,247,.35), transparent 60%) 10% 20%/40% 40% no-repeat,
+        radial-gradient(closest-side, rgba(34,211,238,.28), transparent 60%) 80% 30%/45% 45% no-repeat,
+        radial-gradient(closest-side, rgba(255,255,255,.10), transparent 60%) 40% 80%/38% 38% no-repeat;
+      filter: blur(40px);
+      animation: drift 10s ease-in-out infinite alternate;
+      pointer-events:none;
+      opacity:.8;
+    }
+    @keyframes drift{
+      from{ transform: translate(-2%, -1%) scale(1.02) }
+      to{ transform: translate(2%, 1%) scale(1.06) }
+    }
+
+    /* particle canvas */
+    canvas{
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.85;
+    }
+
+    .wrap{
+      position:relative;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
       padding:24px;
     }
+
     .card{
-      width:min(560px, 100%);
-      background: rgba(20, 18, 40, 0.75);
-      border: 1px solid rgba(160, 120, 255, 0.25);
-      border-radius:16px;
+      width:min(720px, 100%);
+      border-radius:24px;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 30px 90px rgba(0,0,0,.55),
+        0 0 60px var(--glow);
+      backdrop-filter: blur(14px);
       padding:26px;
-      box-shadow: 0 0 35px rgba(160, 120, 255, 0.25);
-      backdrop-filter: blur(10px);
+      position:relative;
+      overflow:hidden;
+      transform: translateY(8px);
+      opacity:0;
+      animation: popIn .6s ease forwards;
     }
-    h1{margin:0 0 8px;font-size:26px}
-    p{margin:8px 0 0;opacity:.9;line-height:1.4}
-    .codeBox{
-      margin:18px 0;
-      padding:14px;
-      border-radius:12px;
-      background: rgba(0,0,0,0.35);
-      border: 1px dashed rgba(180, 140, 255, 0.45);
-      font-size:28px;
-      letter-spacing:4px;
-      text-align:center;
-      color:#caa6ff;
-      font-weight:700;
-      user-select: all;
+    @keyframes popIn{
+      to{ transform: translateY(0); opacity:1 }
     }
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    button{
-      cursor:pointer;
-      border:none;
-      border-radius:12px;
-      padding:12px 14px;
-      background:#7c3aed;
-      color:white;
-      font-weight:700;
-      flex:1;
-      min-width:160px;
-      box-shadow: 0 10px 24px rgba(124,58,237,.25);
-      transition:.15s transform ease, .15s opacity ease;
+
+    .shine{
+      position:absolute; inset:-60%;
+      background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,.12), transparent 65%);
+      transform: rotate(8deg);
+      animation: shine 3.5s ease-in-out infinite;
+      pointer-events:none;
+      opacity:.6;
     }
-    button:hover{transform: translateY(-1px)}
-    button:active{transform: translateY(1px);opacity:.9}
-    .sub{
-      margin-top:12px;
-      opacity:.85;
-      font-size:14px;
+    @keyframes shine{
+      0%{ transform: translateX(-25%) rotate(8deg) }
+      50%{ transform: translateX(25%) rotate(8deg) }
+      100%{ transform: translateX(-25%) rotate(8deg) }
     }
-    code{
-      background: rgba(255,255,255,.08);
-      padding: 2px 6px;
-      border-radius:8px;
+
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
     }
-    .warn{
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .logo{
+      width:44px; height:44px; border-radius:14px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 55%),
+        linear-gradient(135deg, rgba(168,85,247,.95), rgba(34,211,238,.85));
+      box-shadow: 0 18px 40px rgba(168,85,247,.22);
+    }
+    .title{
+      line-height:1.1;
+    }
+    .title h1{
+      font-size:20px; margin:0;
+      letter-spacing:.2px;
+    }
+    .title p{
+      margin:4px 0 0; color:var(--muted); font-size:13px;
+    }
+
+    .pill{
+      font-size:12px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      color: rgba(255,255,255,.78);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--warn);
+      box-shadow: 0 0 18px rgba(251,191,36,.5);
+    }
+
+    .hero{
       margin-top:10px;
-      color:#ffd7a8;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.22);
+    }
+    .hero h2{
+      margin:0;
+      font-size:22px;
+      letter-spacing:.3px;
+    }
+    .hero p{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.5;
       font-size:14px;
-      opacity:.95;
+    }
+
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+    @media (max-width: 720px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .panel{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.18);
+      padding:16px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .label{
+      font-size:12px;
+      color:rgba(255,255,255,.70);
+      margin-bottom:8px;
+    }
+
+    .codeBox{
+      border-radius:16px;
+      padding:16px;
+      border: 1px dashed rgba(180,140,255,.45);
+      background: rgba(0,0,0,.28);
+      font-size:32px;
+      font-weight:900;
+      letter-spacing:5px;
+      text-align:center;
+      color:#d8b4fe;
+      user-select:all;
+      position:relative;
+    }
+    .codeGlow{
+      position:absolute; inset:-20%;
+      background: radial-gradient(circle at 50% 50%, rgba(168,85,247,.26), transparent 55%);
+      filter: blur(20px);
+      pointer-events:none;
+    }
+
+    .btnRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+    .btn{
+      flex:1;
+      min-width:170px;
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      cursor:pointer;
+      font-weight:800;
+      color:white;
+      transition:.15s transform ease, .15s filter ease, .15s opacity ease;
+      box-shadow: 0 14px 32px rgba(0,0,0,.35);
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.05) }
+    .btn:active{ transform: translateY(1px); opacity:.92 }
+
+    .btnPrimary{
+      background: linear-gradient(135deg, rgba(168,85,247,.98), rgba(34,211,238,.85));
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.86);
+      box-shadow:none;
+    }
+
+    .mini{
+      display:grid;
+      gap:10px;
+    }
+    .stat{
+      border-radius:14px;
+      padding:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.22);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-size:13px;
+      color:rgba(255,255,255,.82);
+    }
+    .tag{
+      font-weight:900;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(168,85,247,.14);
+      border:1px solid rgba(168,85,247,.22);
+      color:#e9d5ff;
+    }
+
+    .footer{
+      margin-top:14px;
+      font-size:12px;
+      color:rgba(255,255,255,.62);
+      line-height:1.5;
+    }
+
+    .ok{ color: var(--good); }
+    .bad{ color: var(--bad); }
+    .muted{ color: var(--muted); }
+
+    /* loading bar */
+    .bar{
+      height:8px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      margin-top:10px;
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width:35%;
+      background: linear-gradient(90deg, rgba(168,85,247,1), rgba(34,211,238,1));
+      border-radius:999px;
+      animation: load 1.1s ease-in-out infinite;
+    }
+    @keyframes load{
+      0%{ transform: translateX(-120%); }
+      100%{ transform: translateX(320%); }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>🎉 Reward Unlocked</h1>
-    <p>Here’s your one-time redeem code. Go to Discord and run:</p>
-    <p><code>/entercode YOURCODE</code></p>
+  <div class="aurora"></div>
+  <canvas id="fx"></canvas>
 
-    <div class="codeBox" id="code">LOADING</div>
+  <div class="wrap">
+    <div class="card">
+      <div class="shine"></div>
 
-    <div class="row">
-      <button id="copyBtn">Copy code</button>
-      <button id="regenBtn">Generate new code</button>
-    </div>
+      <div class="top">
+        <div class="brand">
+          <div class="logo"></div>
+          <div class="title">
+            <h1>Reward Portal</h1>
+            <p>Complete the quest → redeem in Discord → get Credits</p>
+          </div>
+        </div>
 
-    <div class="sub" id="status"></div>
-    <div class="warn">
-      Note: this page generates codes locally. To redeem, the code must exist in your bot’s codes list.
-      Use <code>/restockcodes</code> to add codes.
+        <div class="pill" id="verifyPill">
+          <span class="dot" id="verifyDot"></span>
+          <span id="verifyText">Verifying...</span>
+        </div>
+      </div>
+
+      <div class="hero">
+        <h2 id="headline">Hang tight…</h2>
+        <p id="subline">We’re checking if you came from LootLabs.</p>
+        <div class="bar" id="bar"><i></i></div>
+      </div>
+
+      <div class="grid">
+        <div class="panel">
+          <div class="label">Your one-time code</div>
+          <div class="codeBox" id="codeBox">
+            <div class="codeGlow"></div>
+            <span id="code">LOCKED</span>
+          </div>
+
+          <div class="btnRow">
+            <button class="btn btnPrimary" id="copyBtn" disabled>Copy code</button>
+            <button class="btn btnGhost" id="regenBtn" disabled>New code</button>
+          </div>
+
+          <div class="footer" id="status"></div>
+        </div>
+
+        <div class="panel mini">
+          <div class="stat">
+            <span>Discord command</span>
+            <span class="tag" id="cmd">/entercode ...</span>
+          </div>
+          <div class="stat">
+            <span>Cooldown</span>
+            <span class="tag" id="cd">—</span>
+          </div>
+          <div class="stat">
+            <span>Security</span>
+            <span class="tag">Token gate</span>
+          </div>
+          <div class="footer muted">
+            ⚠️ GitHub Pages is static, so this is a “token check” gate (not perfect).
+            For real verification, you need a tiny backend.
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <script>
-    // Easy code gen (no confusing chars)
-    function genCode(len = 8) {
-      const chars = "ABCDEFGHJ
+    // -----------------------------
+    // Tiny particle background
+    // -----------------------------
+    const canvas = document.getElementById("fx");
+    const ctx = canvas.getContext("2d");
+    let W=0,H=0;
+    const dots = [];
+    function resize(){
+      W = canvas.width = window.innerWidth * devicePixelRatio;
+      H = canvas.height = window.innerHeight * devicePixelRatio;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    function rand(min,max){ return Math.random()*(max-min)+min; }
+    for(let i=0;i<80;i++){
+      dots.push({
+        x: rand(0,W), y: rand(0,H),
+        r: rand(0.8,2.3)*devicePixelRatio,
+        vx: rand(-0.15,0.15)*devicePixelRatio,
+        vy: rand(-0.10,0.10)*devicePixelRatio,
+        a: rand(0.15,0.6)
+      });
+    }
+    function tick(){
+      ctx.clearRect(0,0,W,H);
+      for(const d of dots){
+        d.x += d.vx; d.y += d.vy;
+        if(d.x<0) d.x=W; if(d.x>W) d.x=0;
+        if(d.y<0) d.y=H; if(d.y>H) d.y=0;
+        ctx.beginPath();
+        ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+        ctx.fillStyle = `rgba(200,170,255,${d.a})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(tick);
+    }
+    tick();
+
+    // -----------------------------
+    // "LootLabs completion" gating (static)
+    // This is NOT perfect verification; it's a token/param gate.
+    // -----------------------------
+    const pillText = document.getElementById("verifyText");
+    const dot = document.getElementById("verifyDot");
+    const headline = document.getElementById("headline");
+    const subline = document.getElementById("subline");
+    const bar = document.getElementById("bar");
+
+    const codeEl = document.getElementById("code");
+    const cmdEl = document.getElementById("cmd");
+    const statusEl = document.getElementById("status");
+    const copyBtn = document.getElementById("copyBtn");
+    const regenBtn = document.getElementById("regenBtn");
+    const cdEl = document.getElementById("cd");
+
+    const COOLDOWN_MINUTES = 30; // change this
+    const LS_KEY = "reward_last_ts";
+
+    function now(){ return Date.now(); }
+    function msLeft(){
+      const last = Number(localStorage.getItem(LS_KEY) || "0");
+      const cd = COOLDOWN_MINUTES * 60 * 1000;
+      return Math.max(0, (last + cd) - now());
+    }
+    function fmt(ms){
+      const s = Math.ceil(ms/1000);
+      const m = Math.floor(s/60);
+      const r = s % 60;
+      if(m<=0) return `${r}s`;
+      return `${m}m ${r}s`;
+    }
+
+    function genCode(len = 8){
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let out="";
+      for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
+      return out;
+    }
+
+    function setCode(c){
+      codeEl.textContent = c;
+      cmdEl.textContent = "/entercode " + c;
+    }
+
+    // token gate: require ?token=...
+    const url = new URL(location.href);
+    const token = url.searchParams.get("token");
+
+    function setVerified(ok, msg){
+      if(ok){
+        pillText.textContent = "Verified";
+        dot.style.background = "var(--good)";
+        dot.style.boxShadow = "0 0 18px rgba(34,197,94,.55)";
+        headline.textContent = "✅ Reward unlocked!";
+        subline.textContent = msg;
+        bar.style.display = "none";
+      }else{
+        pillText.textContent = "Blocked";
+        dot.style.background = "var(--bad)";
+        dot.style.boxShadow = "0 0 18px rgba(239,68,68,.55)";
+        headline.textContent = "⛔ Access denied";
+        subline.textContent = msg;
+        bar.style.display = "none";
+      }
+    }
+
+    function lockUI(reason){
+      setCode("LOCKED");
+      copyBtn.disabled = true;
+      regenBtn.disabled = true;
+      statusEl.innerHTML = `<span class="bad">${reason}</span>`;
+    }
+
+    function unlockUI(){
+      copyBtn.disabled = false;
+      regenBtn.disabled = false;
+    }
+
+    // Cooldown loop display
+    function updateCooldownUI(){
+      const left = msLeft();
+      if(left > 0){
+        cdEl.textContent = fmt(left);
+        regenBtn.disabled = true;
+        statusEl.innerHTML = `<span class="warn">⏳ Cooldown active:</span> wait <b>${fmt(left)}</b> then generate a new code.`;
+      }else{
+        cdEl.textContent = COOLDOWN_MINUTES + "m";
+        regenBtn.disabled = false;
+      }
+      requestAnimationFrame(updateCooldownUI);
+    }
+
+    // "Verify"
+    setTimeout(() => {
+      // Minimal gate: must have token param to proceed
+      if(!token || token.length < 6){
+        setVerified(false, "Open this page ONLY through the LootLabs link (missing token).");
+        lockUI("Missing token in URL. Go back and use the LootLabs link.");
+        return;
+      }
+
+      // Cooldown check
+      const left = msLeft();
+      if(left > 0){
+        setVerified(true, "You already claimed recently. Cooldown is still running.");
+        setCode("WAIT");
+        unlockUI();
+      }else{
+        setVerified(true, "You can now generate a code and redeem it in Discord.");
+        const c = genCode(8);
+        setCode(c);
+        unlockUI();
+        localStorage.setItem(LS_KEY, String(now()));
+      }
+
+      updateCooldownUI();
+      statusEl.innerHTML = `Redeem in Discord: <b>${cmdEl.textContent}</b>`;
+    }, 900);
+
+    copyBtn.addEventListener("click", async () => {
+      const c = codeEl.textContent;
+      if(!c || c === "LOCKED" || c === "WAIT") return;
+      try{
+        await navigator.clipboard.writeText(c);
+        statusEl.innerHTML = `<span class="ok">✅ Copied!</span> Now run <b>/entercode ${c}</b> in Discord.`;
+      }catch{
+        statusEl.innerHTML = `Copy manually: <b>${c}</b>`;
+      }
+    });
+
+    regenBtn.addEventListener("click", () => {
+      const left = msLeft();
+      if(left > 0) return;
+      const c = genCode(8);
+      setCode(c);
+      localStorage.setItem(LS_KEY, String(now()));
+      statusEl.innerHTML = `New code ready: <b>/entercode ${c}</b>`;
+    });
+  </script>
+</body>
+</html>
