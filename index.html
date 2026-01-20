@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Reward Unlocked</title>
+  <style>
+    body{
+      margin:0;
+      background: radial-gradient(circle at top, #2a145a, #0b0b14 60%);
+      color:#fff;
+      font-family: Arial, sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:24px;
+    }
+    .card{
+      width:min(560px, 100%);
+      background: rgba(20, 18, 40, 0.75);
+      border: 1px solid rgba(160, 120, 255, 0.25);
+      border-radius:16px;
+      padding:26px;
+      box-shadow: 0 0 35px rgba(160, 120, 255, 0.25);
+      backdrop-filter: blur(10px);
+    }
+    h1{margin:0 0 8px;font-size:26px}
+    p{margin:8px 0 0;opacity:.9;line-height:1.4}
+    .codeBox{
+      margin:18px 0;
+      padding:14px;
+      border-radius:12px;
+      background: rgba(0,0,0,0.35);
+      border: 1px dashed rgba(180, 140, 255, 0.45);
+      font-size:28px;
+      letter-spacing:4px;
+      text-align:center;
+      color:#caa6ff;
+      font-weight:700;
+      user-select: all;
+    }
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{
+      cursor:pointer;
+      border:none;
+      border-radius:12px;
+      padding:12px 14px;
+      background:#7c3aed;
+      color:white;
+      font-weight:700;
+      flex:1;
+      min-width:160px;
+      box-shadow: 0 10px 24px rgba(124,58,237,.25);
+      transition:.15s transform ease, .15s opacity ease;
+    }
+    button:hover{transform: translateY(-1px)}
+    button:active{transform: translateY(1px);opacity:.9}
+    .sub{
+      margin-top:12px;
+      opacity:.85;
+      font-size:14px;
+    }
+    code{
+      background: rgba(255,255,255,.08);
+      padding: 2px 6px;
+      border-radius:8px;
+    }
+    .warn{
+      margin-top:10px;
+      color:#ffd7a8;
+      font-size:14px;
+      opacity:.95;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎉 Reward Unlocked</h1>
+    <p>Here’s your one-time redeem code. Go to Discord and run:</p>
+    <p><code>/entercode YOURCODE</code></p>
+
+    <div class="codeBox" id="code">LOADING</div>
+
+    <div class="row">
+      <button id="copyBtn">Copy code</button>
+      <button id="regenBtn">Generate new code</button>
+    </div>
+
+    <div class="sub" id="status"></div>
+    <div class="warn">
+      Note: this page generates codes locally. To redeem, the code must exist in your bot’s codes list.
+      Use <code>/restockcodes</code> to add codes.
+    </div>
+  </div>
+
+  <script>
+    // Easy code gen (no confusing chars)
+    function genCode(len = 8) {
+      const chars = "ABCDEFGHJ
