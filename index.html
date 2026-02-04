@@ -1,552 +1,1211 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Reward Portal</title>
+  <title>BM Fun Lab</title>
+  <meta name="theme-color" content="#070a12" />
+
   <style>
     :root{
-      --bg1:#070612;
-      --bg2:#120a2b;
-      --card:rgba(16,14,32,.72);
-      --stroke:rgba(170,120,255,.22);
-      --glow:rgba(170,120,255,.28);
-      --txt:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.72);
-      --accent:#a855f7;
-      --accent2:#22d3ee;
-      --good:#22c55e;
-      --bad:#ef4444;
-      --warn:#fbbf24;
+      --bg0:#050814;
+      --bg1:#070a12;
+
+      --glass: rgba(255,255,255,.06);
+      --glass2: rgba(255,255,255,.10);
+      --stroke: rgba(255,255,255,.14);
+      --stroke2: rgba(120,160,255,.20);
+
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.62);
+
+      --accent: rgba(120,160,255,.95);
+      --accent2: rgba(170,120,255,.95);
+      --good: rgba(120,255,180,.95);
+      --bad: rgba(255,120,160,.95);
+
+      --shadow: 0 18px 55px rgba(0,0,0,.55);
+      --shadow2: 0 10px 30px rgba(0,0,0,.35);
+
+      --r-xl: 26px;
+      --r-lg: 20px;
+      --r-md: 14px;
+
+      --blur: 16px;
     }
 
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      color:var(--txt);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
       background:
-        radial-gradient(1200px 700px at 20% -10%, rgba(168,85,247,.35), transparent 55%),
-        radial-gradient(900px 700px at 110% 20%, rgba(34,211,238,.25), transparent 55%),
-        radial-gradient(700px 600px at 30% 120%, rgba(34,197,94,.12), transparent 55%),
-        linear-gradient(160deg, var(--bg2), var(--bg1));
-      min-height:100vh;
-      overflow:hidden;
+        radial-gradient(1200px 800px at 18% -10%, rgba(120,160,255,.18), transparent 60%),
+        radial-gradient(900px 700px at 92% 10%, rgba(170,120,255,.16), transparent 55%),
+        radial-gradient(900px 700px at 50% 120%, rgba(120,255,180,.10), transparent 50%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
     }
 
-    /* moving aurora */
-    .aurora{
-      position:fixed; inset:-20%;
-      background:
-        radial-gradient(closest-side, rgba(168,85,247,.35), transparent 60%) 10% 20%/40% 40% no-repeat,
-        radial-gradient(closest-side, rgba(34,211,238,.28), transparent 60%) 80% 30%/45% 45% no-repeat,
-        radial-gradient(closest-side, rgba(255,255,255,.10), transparent 60%) 40% 80%/38% 38% no-repeat;
-      filter: blur(40px);
-      animation: drift 10s ease-in-out infinite alternate;
-      pointer-events:none;
-      opacity:.8;
-    }
-    @keyframes drift{
-      from{ transform: translate(-2%, -1%) scale(1.02) }
-      to{ transform: translate(2%, 1%) scale(1.06) }
-    }
-
-    /* particle canvas */
-    canvas{
+    /* animated grain + soft sheen */
+    .noise{
       position:fixed; inset:0;
       pointer-events:none;
-      opacity:.85;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      opacity:.08;
+      animation: drift 10s linear infinite;
+    }
+    @keyframes drift { from{ transform:translate3d(0,0,0);} to{ transform:translate3d(-80px,30px,0);} }
+
+    .sheen{
+      position:fixed; inset:-30%;
+      pointer-events:none;
+      background: radial-gradient(circle at 20% 10%, rgba(255,255,255,.07), transparent 40%),
+                  radial-gradient(circle at 70% 30%, rgba(255,255,255,.05), transparent 45%);
+      filter: blur(12px);
+      opacity:.55;
+      animation: floaty 8s ease-in-out infinite;
+    }
+    @keyframes floaty{
+      0%,100%{ transform: translate3d(0,0,0) rotate(0deg); }
+      50%{ transform: translate3d(18px,-10px,0) rotate(1deg); }
     }
 
     .wrap{
-      position:relative;
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      padding:24px;
+      max-width:1150px;
+      margin:0 auto;
+      padding: 24px 16px 70px;
     }
 
-    .card{
-      width:min(720px, 100%);
-      border-radius:24px;
-      background: var(--card);
-      border: 1px solid var(--stroke);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.05) inset,
-        0 30px 90px rgba(0,0,0,.55),
-        0 0 60px var(--glow);
-      backdrop-filter: blur(14px);
-      padding:26px;
+    /* top bar */
+    .topbar{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .logo{
+      width:40px; height:40px;
+      border-radius:14px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(120,160,255,.45), transparent 60%),
+        radial-gradient(circle at 70% 70%, rgba(170,120,255,.30), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
       position:relative;
       overflow:hidden;
-      transform: translateY(8px);
-      opacity:0;
-      animation: popIn .6s ease forwards;
     }
-    @keyframes popIn{
-      to{ transform: translateY(0); opacity:1 }
-    }
-
-    .shine{
+    .logo::after{
+      content:"";
       position:absolute; inset:-60%;
-      background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,.12), transparent 65%);
-      transform: rotate(8deg);
-      animation: shine 3.5s ease-in-out infinite;
-      pointer-events:none;
+      background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,.22), transparent 65%);
+      transform: rotate(18deg);
+      animation: shine 3.4s ease-in-out infinite;
       opacity:.6;
     }
     @keyframes shine{
-      0%{ transform: translateX(-25%) rotate(8deg) }
-      50%{ transform: translateX(25%) rotate(8deg) }
-      100%{ transform: translateX(-25%) rotate(8deg) }
+      0%,100%{ transform: translateX(-20%) rotate(18deg); opacity:.35; }
+      50%{ transform: translateX(22%) rotate(18deg); opacity:.65; }
     }
 
-    .top{
+    .brand h1{
+      margin:0;
+      font-size: clamp(18px, 2.3vw, 28px);
+      letter-spacing:.3px;
+      line-height:1.05;
+    }
+    .brand p{
+      margin:2px 0 0;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .nav{
       display:flex;
+      gap:10px;
       align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      margin-bottom:14px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-    }
-    .logo{
-      width:44px; height:44px; border-radius:14px;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 55%),
-        linear-gradient(135deg, rgba(168,85,247,.95), rgba(34,211,238,.85));
-      box-shadow: 0 18px 40px rgba(168,85,247,.22);
-    }
-    .title{
-      line-height:1.1;
-    }
-    .title h1{
-      font-size:20px; margin:0;
-      letter-spacing:.2px;
-    }
-    .title p{
-      margin:4px 0 0; color:var(--muted); font-size:13px;
+      flex-wrap:wrap;
     }
 
     .pill{
-      font-size:12px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.25);
-      color: rgba(255,255,255,.78);
+      border:1px solid var(--stroke);
+      background:
+        radial-gradient(800px 220px at 15% 0%, rgba(255,255,255,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      box-shadow: var(--shadow2);
+      padding:10px 12px;
+      border-radius: 999px;
       display:flex;
+      gap:10px;
       align-items:center;
-      gap:8px;
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      transition: transform .18s ease, border-color .18s ease;
     }
-    .dot{
-      width:8px; height:8px; border-radius:50%;
-      background: var(--warn);
-      box-shadow: 0 0 18px rgba(251,191,36,.5);
+    .pill:hover{
+      transform: translateY(-1px);
+      border-color: var(--stroke2);
+    }
+    .pill strong{ font-weight:800; }
+    .pill small{ color:var(--muted); }
+
+    .btn{
+      appearance:none;
+      border:1px solid var(--stroke);
+      background:
+        radial-gradient(800px 220px at 15% 0%, rgba(255,255,255,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      user-select:none;
+
+      transition:
+        transform .16s ease,
+        border-color .16s ease,
+        box-shadow .16s ease,
+        filter .16s ease;
+      will-change: transform;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--stroke2);
+      box-shadow: 0 14px 40px rgba(0,0,0,.42);
+      filter: brightness(1.03);
+    }
+    .btn:active{ transform: translateY(0px) scale(.98); }
+    .btn.primary{
+      border-color: rgba(120,160,255,.35);
+      background:
+        radial-gradient(900px 240px at 20% 0%, rgba(120,160,255,.22), transparent 65%),
+        linear-gradient(180deg, rgba(120,160,255,.22), rgba(255,255,255,.04));
+    }
+    .btn.danger{
+      border-color: rgba(255,120,160,.35);
+      background:
+        radial-gradient(900px 240px at 20% 0%, rgba(255,120,160,.18), transparent 65%),
+        linear-gradient(180deg, rgba(255,120,160,.18), rgba(255,255,255,.04));
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.04);
     }
 
-    .hero{
-      margin-top:10px;
-      padding:18px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(0,0,0,.22);
-    }
-    .hero h2{
-      margin:0;
-      font-size:22px;
-      letter-spacing:.3px;
-    }
-    .hero p{
-      margin:8px 0 0;
-      color:var(--muted);
-      line-height:1.5;
-      font-size:14px;
-    }
-
-    .grid{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-    }
-    @media (max-width: 720px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-
-    .panel{
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);
+    .seg{
+      display:flex; gap:6px;
+      padding:6px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.18);
-      padding:16px;
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .seg button{
+      border:0;
+      padding:8px 10px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      cursor:pointer;
+      transition: background .18s ease, color .18s ease, transform .18s ease;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .seg button:hover{ transform: translateY(-1px); color: var(--text); }
+    .seg button.active{
+      color: var(--text);
+      background:
+        radial-gradient(700px 210px at 20% 0%, rgba(120,160,255,.20), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+      border:1px solid rgba(120,160,255,.22);
+    }
+
+    /* layout */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .card{
+      grid-column: span 6;
+      border: 1px solid var(--stroke);
+      background:
+        radial-gradient(900px 500px at 10% 0%, rgba(255,255,255,.11), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow);
+      padding: 16px;
       position:relative;
       overflow:hidden;
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      transform: translateZ(0);
+      transition: transform .20s ease, border-color .20s ease;
     }
-
-    .label{
-      font-size:12px;
-      color:rgba(255,255,255,.70);
-      margin-bottom:8px;
+    .card:hover{
+      transform: translateY(-2px);
+      border-color: var(--stroke2);
     }
-
-    .codeBox{
-      border-radius:16px;
-      padding:16px;
-      border: 1px dashed rgba(180,140,255,.45);
-      background: rgba(0,0,0,.28);
-      font-size:32px;
-      font-weight:900;
-      letter-spacing:5px;
-      text-align:center;
-      color:#d8b4fe;
-      user-select:all;
-      position:relative;
-    }
-    .codeGlow{
-      position:absolute; inset:-20%;
-      background: radial-gradient(circle at 50% 50%, rgba(168,85,247,.26), transparent 55%);
-      filter: blur(20px);
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:-60px -60px auto auto;
+      width:180px; height:180px;
+      background: radial-gradient(circle at 30% 30%, rgba(120,160,255,.35), transparent 65%);
+      filter: blur(6px);
+      opacity:.55;
+      transform: rotate(18deg);
       pointer-events:none;
     }
 
-    .btnRow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:12px;
-    }
-    .btn{
-      flex:1;
-      min-width:170px;
-      border:none;
-      border-radius:14px;
-      padding:12px 14px;
-      cursor:pointer;
-      font-weight:800;
-      color:white;
-      transition:.15s transform ease, .15s filter ease, .15s opacity ease;
-      box-shadow: 0 14px 32px rgba(0,0,0,.35);
-    }
-    .btn:hover{ transform: translateY(-1px); filter: brightness(1.05) }
-    .btn:active{ transform: translateY(1px); opacity:.92 }
-
-    .btnPrimary{
-      background: linear-gradient(135deg, rgba(168,85,247,.98), rgba(34,211,238,.85));
-    }
-    .btnGhost{
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color: rgba(255,255,255,.86);
-      box-shadow:none;
-    }
-
-    .mini{
-      display:grid;
-      gap:10px;
-    }
-    .stat{
-      border-radius:14px;
-      padding:12px;
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(0,0,0,.22);
+    .card h2{
+      margin:0 0 10px;
+      font-size: 16px;
+      letter-spacing:.2px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      font-size:13px;
-      color:rgba(255,255,255,.82);
     }
-    .tag{
-      font-weight:900;
-      padding:6px 10px;
-      border-radius:999px;
-      background: rgba(168,85,247,.14);
-      border:1px solid rgba(168,85,247,.22);
-      color:#e9d5ff;
+    .sub{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size: 13px;
+      line-height:1.35;
     }
 
-    .footer{
-      margin-top:14px;
-      font-size:12px;
-      color:rgba(255,255,255,.62);
-      line-height:1.5;
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
     }
 
-    .ok{ color: var(--good); }
-    .bad{ color: var(--bad); }
-    .muted{ color: var(--muted); }
-
-    /* loading bar */
-    .bar{
-      height:8px;
-      border-radius:999px;
-      background: rgba(255,255,255,.08);
+    .display{
+      width:100%;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+      min-height: 70px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      position:relative;
       overflow:hidden;
+    }
+    .display::before{
+      content:"";
+      position:absolute; inset:-50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.10), transparent 42%);
+      opacity:.55;
+      transform: rotate(12deg);
+      pointer-events:none;
+    }
+
+    .big{
+      font-size: clamp(28px, 4vw, 46px);
+      letter-spacing:.5px;
+      text-shadow: 0 8px 30px rgba(0,0,0,.55);
+    }
+    .glow{
+      filter: drop-shadow(0 0 18px rgba(120,160,255,.35));
+    }
+
+    .tiny{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    /* page transitions */
+    .page{
+      opacity:0;
+      transform: translateY(8px) scale(.995);
+      pointer-events:none;
+      transition: opacity .22s ease, transform .22s ease;
+    }
+    .page.active{
+      opacity:1;
+      transform: translateY(0) scale(1);
+      pointer-events:auto;
+    }
+
+    /* dashboard */
+    .statgrid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .stat{
+      grid-column: span 3;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--r-lg);
+      background:
+        radial-gradient(800px 240px at 20% 0%, rgba(255,255,255,.10), transparent 70%),
+        rgba(0,0,0,.18);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow2);
+      padding: 14px;
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .stat:hover{ transform: translateY(-2px); border-color: rgba(120,160,255,.22); }
+    .stat .k{ color: var(--muted); font-size:12px; margin-bottom:6px; }
+    .stat .v{ font-size: 22px; font-weight:900; letter-spacing:.3px; }
+
+    .panel{
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--r-xl);
+      background:
+        radial-gradient(900px 360px at 10% 0%, rgba(255,255,255,.10), transparent 65%),
+        rgba(0,0,0,.18);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .history{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
       margin-top:10px;
     }
-    .bar > i{
-      display:block;
-      height:100%;
-      width:35%;
-      background: linear-gradient(90deg, rgba(168,85,247,1), rgba(34,211,238,1));
-      border-radius:999px;
-      animation: load 1.1s ease-in-out infinite;
+    .event{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
     }
-    @keyframes load{
-      0%{ transform: translateX(-120%); }
-      100%{ transform: translateX(320%); }
+    .event .left{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      min-width:0;
+    }
+    .badge{
+      width:34px;height:34px;
+      border-radius: 14px;
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+    }
+    .event .txt{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+    .event .txt b{
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 60vw;
+    }
+    .event .txt small{ color:var(--muted); font-size:12px; }
+    .event .right{
+      color: var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    /* toast */
+    .toast{
+      position:fixed;
+      left:50%;
+      top:18px;
+      transform: translateX(-50%) translateY(-6px);
+      border:1px solid var(--stroke);
+      background:
+        radial-gradient(900px 220px at 20% 0%, rgba(255,255,255,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      padding:10px 12px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      z-index:10;
+      max-width:min(94vw, 820px);
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(120,160,255,.55);
+      flex:0 0 auto;
+    }
+    .toast .msg{
+      font-size:13px;
+      color:var(--text);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    /* micro anims */
+    .shake{ animation: shake .34s ease; }
+    @keyframes shake{
+      0%,100%{ transform:translate3d(0,0,0); }
+      20%{ transform:translate3d(-2px,1px,0); }
+      40%{ transform:translate3d(2px,-1px,0); }
+      60%{ transform:translate3d(-1px,-2px,0); }
+      80%{ transform:translate3d(1px,2px,0); }
+    }
+
+    .pop{ animation: pop .22s ease; }
+    @keyframes pop{
+      0%{ transform: scale(.98); filter: brightness(.98); }
+      100%{ transform: scale(1); filter: brightness(1.02); }
+    }
+
+    .sr{ position:absolute; left:-9999px; }
+    input{
+      outline:none;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      border-radius: var(--r-md);
+      padding: 10px 12px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+      transition: border-color .18s ease, transform .18s ease;
+    }
+    input:focus{
+      border-color: rgba(120,160,255,.35);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 960px){
+      .card{ grid-column: span 12; }
+      .stat{ grid-column: span 6; }
+    }
+    @media (max-width: 520px){
+      .stat{ grid-column: span 12; }
+    }
+
+    /* reduced motion */
+    .reduced *{
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
     }
   </style>
 </head>
+
 <body>
-  <div class="aurora"></div>
-  <canvas id="fx"></canvas>
+  <div class="noise"></div>
+  <div class="sheen"></div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <div class="dot" id="toastDot"></div>
+    <div class="msg" id="toastMsg">Hello</div>
+  </div>
 
   <div class="wrap">
-    <div class="card">
-      <div class="shine"></div>
-
-      <div class="top">
-        <div class="brand">
-          <div class="logo"></div>
-          <div class="title">
-            <h1>Reward Portal</h1>
-            <p>Complete the quest → redeem in Discord → get Credits</p>
-          </div>
-        </div>
-
-        <div class="pill" id="verifyPill">
-          <span class="dot" id="verifyDot"></span>
-          <span id="verifyText">Verifying...</span>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>BM Fun Lab 🧪</h1>
+          <p>dark glossy mini-games + stats dashboard</p>
         </div>
       </div>
 
-      <div class="hero">
-        <h2 id="headline">Hang tight…</h2>
-        <p id="subline">We’re checking if you came from LootLabs.</p>
-        <div class="bar" id="bar"><i></i></div>
-      </div>
-
-      <div class="grid">
-        <div class="panel">
-          <div class="label">Your one-time code</div>
-          <div class="codeBox" id="codeBox">
-            <div class="codeGlow"></div>
-            <span id="code">LOCKED</span>
-          </div>
-
-          <div class="btnRow">
-            <button class="btn btnPrimary" id="copyBtn" disabled>Copy code</button>
-            <button class="btn btnGhost" id="regenBtn" disabled>New code</button>
-          </div>
-
-          <div class="footer" id="status"></div>
+      <div class="nav">
+        <div class="seg" role="tablist" aria-label="Pages">
+          <button id="tabHome" class="active" role="tab" aria-selected="true">Home</button>
+          <button id="tabDash" role="tab" aria-selected="false">Dashboard</button>
         </div>
 
-        <div class="panel mini">
-          <div class="stat">
-            <span>Discord command</span>
-            <span class="tag" id="cmd">/entercode ...</span>
-          </div>
-          <div class="stat">
-            <span>Cooldown</span>
-            <span class="tag" id="cd">—</span>
-          </div>
-          <div class="stat">
-            <span>Security</span>
-            <span class="tag">Token gate</span>
-          </div>
-          <div class="footer muted">
-            ⚠️ GitHub Pages is static, so this is a “token check” gate (not perfect).
-            For real verification, you need a tiny backend.
+        <div class="pill" title="Saved in your browser">
+          <div>
+            <div><strong id="statPlaysTop">0</strong> plays</div>
+            <small id="statBestTop">best streak: 0</small>
           </div>
         </div>
-      </div>
 
+        <button class="btn" id="btnReset">Reset</button>
+        <button class="btn primary" id="btnChaos">CHAOS</button>
+      </div>
     </div>
+
+    <!-- HOME PAGE -->
+    <section class="page active" id="pageHome">
+      <div class="grid">
+        <!-- SLOT -->
+        <section class="card" id="cardSlot">
+          <h2>
+            <span>🎰 Emoji Slot</span>
+            <span style="color:var(--muted); font-size:12px;">3 match = win</span>
+          </h2>
+          <p class="sub">Pull the lever, twin. If all three emojis match you get a streak boost.</p>
+
+          <div class="display">
+            <div class="big glow" id="slotDisplay">🍒&nbsp;&nbsp;🍋&nbsp;&nbsp;🍇</div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn primary" id="btnSpin">Spin</button>
+            <button class="btn" id="btnAuto">Auto x10</button>
+            <div style="flex:1"></div>
+            <div style="color:var(--muted); font-size:13px;">wins: <strong id="slotWins">0</strong></div>
+          </div>
+
+          <div class="tiny">
+            <span>streak bonus: <strong id="slotStreakBonus">x1</strong></span>
+            <span>last result: <strong id="slotLast">—</strong></span>
+          </div>
+        </section>
+
+        <!-- DICE -->
+        <section class="card" id="cardDice">
+          <h2>
+            <span>🎲 Dice Roll</span>
+            <span style="color:var(--muted); font-size:12px;">d6 + d20</span>
+          </h2>
+          <p class="sub">If d6 hits 6 it “crits” and boosts your streak. Otherwise it’s a tragic roll.</p>
+
+          <div class="display">
+            <div class="big" id="diceDisplay">d6: 1 · d20: 1</div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn primary" id="btnRoll">Roll</button>
+            <button class="btn" id="btnRoll20">Roll d20 only</button>
+            <div style="flex:1"></div>
+            <div style="color:var(--muted); font-size:13px;">crits: <strong id="diceCrits">0</strong></div>
+          </div>
+
+          <div class="tiny">
+            <span>avg d20: <strong id="diceAvgHome">—</strong></span>
+            <span>last: <strong id="diceLast">—</strong></span>
+          </div>
+        </section>
+
+        <!-- COIN -->
+        <section class="card" id="cardCoin">
+          <h2>
+            <span>🪙 Coin Flip</span>
+            <span style="color:var(--muted); font-size:12px;">pick a side</span>
+          </h2>
+          <p class="sub">Call it right and your streak climbs. Call it wrong and it’s over for you.</p>
+
+          <div class="display">
+            <div class="big" id="coinDisplay">—</div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn primary" id="btnHeads">Heads</button>
+            <button class="btn primary" id="btnTails">Tails</button>
+            <div style="flex:1"></div>
+            <div style="color:var(--muted); font-size:13px;">accuracy: <strong id="coinAccHome">—</strong></div>
+          </div>
+
+          <div class="tiny">
+            <span>correct: <strong id="coinCorrect">0</strong></span>
+            <span>wrong: <strong id="coinWrong">0</strong></span>
+          </div>
+        </section>
+
+        <!-- PICKER -->
+        <section class="card" id="cardPick">
+          <h2>
+            <span>🎯 Random Picker</span>
+            <span style="color:var(--muted); font-size:12px;">wheel-ish</span>
+          </h2>
+          <p class="sub">Throw options in, fate chooses. Perfect for “what do I do rn”.</p>
+
+          <div class="row">
+            <label class="sr" for="pickInput">Options</label>
+            <input id="pickInput" placeholder="pizza, code, sleep, roblox..." style="flex:1; min-width:220px;" />
+            <button class="btn primary" id="btnPick">Pick</button>
+          </div>
+
+          <div class="display" style="margin-top:12px;">
+            <div class="big" id="pickDisplay">Type options ↑</div>
+          </div>
+
+          <div class="tiny">
+            <span>tip: separate with commas</span>
+            <span>last: <strong id="pickLast">—</strong></span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- DASHBOARD PAGE -->
+    <section class="page" id="pageDash">
+      <div class="statgrid">
+        <div class="stat"><div class="k">Plays</div><div class="v" id="dPlays">0</div></div>
+        <div class="stat"><div class="k">Current streak</div><div class="v" id="dStreak">0</div></div>
+        <div class="stat"><div class="k">Best streak</div><div class="v" id="dBest">0</div></div>
+        <div class="stat"><div class="k">Slot wins</div><div class="v" id="dSlotWins">0</div></div>
+
+        <div class="stat"><div class="k">Dice crits</div><div class="v" id="dCrits">0</div></div>
+        <div class="stat"><div class="k">Avg d20</div><div class="v" id="dAvg20">—</div></div>
+        <div class="stat"><div class="k">Coin accuracy</div><div class="v" id="dAcc">—</div></div>
+        <div class="stat"><div class="k">History</div><div class="v" id="dHistCount">0</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="row" style="justify-content:space-between;">
+          <div>
+            <div style="font-weight:900; letter-spacing:.2px;">Recent Activity</div>
+            <div style="color:var(--muted); font-size:12.5px; margin-top:2px;">Last 20 actions saved locally</div>
+          </div>
+          <div class="row">
+            <button class="btn ghost" id="btnClearHistory">Clear history</button>
+            <button class="btn" id="btnToggleMotion">Toggle reduced motion</button>
+          </div>
+        </div>
+
+        <div class="history" id="historyList"></div>
+      </div>
+    </section>
+
+    <p style="margin:18px 2px 0; color:var(--muted); font-size:13px;">
+      Tip: This site saves stats + history in <b>your browser</b> (localStorage). No servers. No tracking. Just vibes.
+    </p>
   </div>
 
   <script>
-    // -----------------------------
-    // Tiny particle background
-    // -----------------------------
-    const canvas = document.getElementById("fx");
-    const ctx = canvas.getContext("2d");
-    let W=0,H=0;
-    const dots = [];
-    function resize(){
-      W = canvas.width = window.innerWidth * devicePixelRatio;
-      H = canvas.height = window.innerHeight * devicePixelRatio;
-    }
-    window.addEventListener("resize", resize);
-    resize();
+    // =======================
+    // helpers
+    // =======================
+    const $ = (q) => document.querySelector(q);
+    const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-    function rand(min,max){ return Math.random()*(max-min)+min; }
-    for(let i=0;i<80;i++){
-      dots.push({
-        x: rand(0,W), y: rand(0,H),
-        r: rand(0.8,2.3)*devicePixelRatio,
-        vx: rand(-0.15,0.15)*devicePixelRatio,
-        vy: rand(-0.10,0.10)*devicePixelRatio,
-        a: rand(0.15,0.6)
+    function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+    // micro beep (no assets)
+    function beep(freq=520, dur=0.06){
+      try{
+        const ctx = beep.ctx || (beep.ctx = new (window.AudioContext || window.webkitAudioContext)());
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.value = freq;
+        g.gain.value = 0.0001;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        const t = ctx.currentTime;
+        g.gain.exponentialRampToValueAtTime(0.06, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.stop(t + dur + 0.01);
+      }catch(e){}
+    }
+
+    function bump(el){
+      el.classList.remove("shake");
+      void el.offsetWidth;
+      el.classList.add("shake");
+    }
+
+    function toast(msg, kind="accent"){
+      const el = $("#toast");
+      const dot = $("#toastDot");
+      const out = $("#toastMsg");
+      out.textContent = msg;
+
+      let color = "var(--accent)";
+      if(kind==="good") color = "var(--good)";
+      if(kind==="bad") color = "var(--bad)";
+      dot.style.background = color;
+
+      el.classList.add("show");
+      clearTimeout(toast.t);
+      toast.t = setTimeout(()=> el.classList.remove("show"), 1700);
+    }
+
+    function safeJSON(s){
+      try{ return s ? JSON.parse(s) : {}; }catch{ return {}; }
+    }
+
+    function nowISO(){ return new Date().toISOString(); }
+    function fmtTime(iso){
+      try{
+        const d = new Date(iso);
+        return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+      }catch{ return ""; }
+    }
+
+    // =======================
+    // storage
+    // =======================
+    const LS_STATS = "bm_funlab_stats_v2";
+    const LS_HIST  = "bm_funlab_history_v2";
+    const LS_PREF  = "bm_funlab_prefs_v1";
+
+    const stats = {
+      plays: 0,
+      streak: 0,
+      bestStreak: 0,
+
+      slotWins: 0,
+
+      diceCrits: 0,
+      d20Sum: 0,
+      d20Count: 0,
+
+      coinCorrect: 0,
+      coinWrong: 0,
+
+      ...safeJSON(localStorage.getItem(LS_STATS))
+    };
+
+    const history = Array.isArray(safeJSON(localStorage.getItem(LS_HIST))) ? safeJSON(localStorage.getItem(LS_HIST)) : [];
+    const prefs = {
+      reducedMotion: false,
+      ...safeJSON(localStorage.getItem(LS_PREF))
+    };
+
+    // apply reduced motion
+    if(prefs.reducedMotion) document.body.classList.add("reduced");
+
+    function pushHistory(kind, title, detail){
+      history.unshift({
+        t: nowISO(),
+        kind,
+        title,
+        detail: detail || ""
       });
+      if(history.length > 20) history.length = 20;
+      localStorage.setItem(LS_HIST, JSON.stringify(history));
+      renderHistory();
     }
-    function tick(){
-      ctx.clearRect(0,0,W,H);
-      for(const d of dots){
-        d.x += d.vx; d.y += d.vy;
-        if(d.x<0) d.x=W; if(d.x>W) d.x=0;
-        if(d.y<0) d.y=H; if(d.y>H) d.y=0;
-        ctx.beginPath();
-        ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
-        ctx.fillStyle = `rgba(200,170,255,${d.a})`;
-        ctx.fill();
+
+    function saveStats(){
+      localStorage.setItem(LS_STATS, JSON.stringify(stats));
+      renderStats();
+    }
+
+    function addPlay(win, boost=1){
+      stats.plays += 1;
+      if(win){
+        stats.streak += boost;
+        stats.streak = Math.floor(stats.streak);
+        stats.bestStreak = Math.max(stats.bestStreak, stats.streak);
+      } else {
+        stats.streak = 0;
       }
-      requestAnimationFrame(tick);
-    }
-    tick();
-
-    // -----------------------------
-    // "LootLabs completion" gating (static)
-    // This is NOT perfect verification; it's a token/param gate.
-    // -----------------------------
-    const pillText = document.getElementById("verifyText");
-    const dot = document.getElementById("verifyDot");
-    const headline = document.getElementById("headline");
-    const subline = document.getElementById("subline");
-    const bar = document.getElementById("bar");
-
-    const codeEl = document.getElementById("code");
-    const cmdEl = document.getElementById("cmd");
-    const statusEl = document.getElementById("status");
-    const copyBtn = document.getElementById("copyBtn");
-    const regenBtn = document.getElementById("regenBtn");
-    const cdEl = document.getElementById("cd");
-
-    const COOLDOWN_MINUTES = 30; // change this
-    const LS_KEY = "reward_last_ts";
-
-    function now(){ return Date.now(); }
-    function msLeft(){
-      const last = Number(localStorage.getItem(LS_KEY) || "0");
-      const cd = COOLDOWN_MINUTES * 60 * 1000;
-      return Math.max(0, (last + cd) - now());
-    }
-    function fmt(ms){
-      const s = Math.ceil(ms/1000);
-      const m = Math.floor(s/60);
-      const r = s % 60;
-      if(m<=0) return `${r}s`;
-      return `${m}m ${r}s`;
+      saveStats();
     }
 
-    function genCode(len = 8){
-      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      let out="";
-      for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
-      return out;
+    function avgD20(){
+      return stats.d20Count ? (stats.d20Sum / stats.d20Count) : null;
     }
 
-    function setCode(c){
-      codeEl.textContent = c;
-      cmdEl.textContent = "/entercode " + c;
+    function coinAcc(){
+      const total = stats.coinCorrect + stats.coinWrong;
+      return total ? (stats.coinCorrect / total) : null;
     }
 
-    // token gate: require ?token=...
-    const url = new URL(location.href);
-    const token = url.searchParams.get("token");
+    // =======================
+    // pages
+    // =======================
+    function setPage(which){
+      const home = $("#pageHome");
+      const dash = $("#pageDash");
+      const tHome = $("#tabHome");
+      const tDash = $("#tabDash");
 
-    function setVerified(ok, msg){
-      if(ok){
-        pillText.textContent = "Verified";
-        dot.style.background = "var(--good)";
-        dot.style.boxShadow = "0 0 18px rgba(34,197,94,.55)";
-        headline.textContent = "✅ Reward unlocked!";
-        subline.textContent = msg;
-        bar.style.display = "none";
+      const isHome = which === "home";
+      home.classList.toggle("active", isHome);
+      dash.classList.toggle("active", !isHome);
+
+      tHome.classList.toggle("active", isHome);
+      tDash.classList.toggle("active", !isHome);
+
+      tHome.setAttribute("aria-selected", String(isHome));
+      tDash.setAttribute("aria-selected", String(!isHome));
+
+      if(!isHome) renderHistory();
+    }
+
+    // =======================
+    // games
+    // =======================
+    // SLOT
+    const EMOJIS = ["🍒","🍋","🍇","🍉","⭐","💎","🔥","🧊","🍀","👑"];
+    let slotBusy = false;
+
+    function slotBonus(){
+      const b = 1 + Math.floor(stats.streak / 5);
+      return clamp(b, 1, 4);
+    }
+    function slotSpinOnce(){
+      const a = EMOJIS[rand(0, EMOJIS.length-1)];
+      const b = EMOJIS[rand(0, EMOJIS.length-1)];
+      const c = EMOJIS[rand(0, EMOJIS.length-1)];
+      return [a,b,c];
+    }
+
+    async function spin(){
+      if(slotBusy) return;
+      slotBusy = true;
+
+      const disp = $("#slotDisplay");
+      const card = $("#cardSlot");
+      bump(card);
+
+      const frames = prefs.reducedMotion ? 6 : 18;
+      for(let i=0;i<frames;i++){
+        const [a,b,c] = slotSpinOnce();
+        disp.innerHTML = `${a}&nbsp;&nbsp;${b}&nbsp;&nbsp;${c}`;
+        beep(420 + i*10, 0.025);
+        await wait(prefs.reducedMotion ? 35 : (26 + i*4));
+      }
+
+      const [a,b,c] = slotSpinOnce();
+      disp.innerHTML = `${a}&nbsp;&nbsp;${b}&nbsp;&nbsp;${c}`;
+
+      const win = (a===b && b===c);
+      const bonus = slotBonus();
+      $("#slotStreakBonus").textContent = `x${bonus}`;
+
+      if(win){
+        stats.slotWins += 1;
+        addPlay(true, bonus);
+        $("#slotLast").textContent = "WIN";
+        toast(`JACKPOT ${a}${b}${c} (+streak x${bonus})`, "good");
+        pushHistory("slot", "Slot JACKPOT", `${a}${b}${c} · bonus x${bonus}`);
+        beep(880, 0.08); beep(990, 0.08);
+      } else {
+        addPlay(false, 1);
+        $("#slotLast").textContent = "loss";
+        toast(`Nope… you got ${a}${b}${c}`, "bad");
+        pushHistory("slot", "Slot miss", `${a}${b}${c}`);
+        beep(180, 0.08);
+      }
+
+      saveStats();
+      slotBusy = false;
+    }
+
+    async function auto10(){
+      if(slotBusy) return;
+      toast("Auto spin x10… 😈");
+      pushHistory("sys", "Auto spin", "x10");
+      for(let i=0;i<10;i++){
+        await spin();
+        await wait(prefs.reducedMotion ? 70 : 120);
+      }
+    }
+
+    // DICE
+    function rollDice(){
+      const d6 = rand(1,6);
+      const d20 = rand(1,20);
+
+      $("#diceDisplay").textContent = `d6: ${d6} · d20: ${d20}`;
+      $("#diceLast").textContent = `${d6}/${d20}`;
+
+      stats.d20Sum += d20;
+      stats.d20Count += 1;
+
+      const crit = (d6 === 6);
+      if(crit){
+        stats.diceCrits += 1;
+        addPlay(true, 2);
+        toast("CRIT! d6 hit 6 (+streak boost)", "good");
+        pushHistory("dice", "Dice CRIT", `d6=6 · d20=${d20}`);
+        beep(740, 0.08); beep(920, 0.08);
       }else{
-        pillText.textContent = "Blocked";
-        dot.style.background = "var(--bad)";
-        dot.style.boxShadow = "0 0 18px rgba(239,68,68,.55)";
-        headline.textContent = "⛔ Access denied";
-        subline.textContent = msg;
-        bar.style.display = "none";
+        addPlay(false, 1);
+        toast("Rolled. No crit 😔", "accent");
+        pushHistory("dice", "Dice roll", `d6=${d6} · d20=${d20}`);
+        beep(420, 0.06);
       }
+
+      bump($("#cardDice"));
+      saveStats();
     }
 
-    function lockUI(reason){
-      setCode("LOCKED");
-      copyBtn.disabled = true;
-      regenBtn.disabled = true;
-      statusEl.innerHTML = `<span class="bad">${reason}</span>`;
+    function rollD20Only(){
+      const d20 = rand(1,20);
+      $("#diceDisplay").textContent = `d20: ${d20} (solo)`;
+      $("#diceLast").textContent = `—/${d20}`;
+
+      stats.d20Sum += d20;
+      stats.d20Count += 1;
+
+      addPlay(true, 1);
+      toast(`d20 says: ${d20}`, "accent");
+      pushHistory("dice", "d20 solo", `d20=${d20}`);
+      beep(520, 0.06);
+
+      bump($("#cardDice"));
+      saveStats();
     }
 
-    function unlockUI(){
-      copyBtn.disabled = false;
-      regenBtn.disabled = false;
-    }
+    // COIN
+    function flip(call){
+      const result = Math.random() < 0.5 ? "Heads" : "Tails";
+      const emoji = result === "Heads" ? "🙂‍↕️" : "🙂‍↔️";
+      $("#coinDisplay").textContent = `${emoji} ${result}`;
 
-    // Cooldown loop display
-    function updateCooldownUI(){
-      const left = msLeft();
-      if(left > 0){
-        cdEl.textContent = fmt(left);
-        regenBtn.disabled = true;
-        statusEl.innerHTML = `<span class="warn">⏳ Cooldown active:</span> wait <b>${fmt(left)}</b> then generate a new code.`;
+      const correct = (call === result);
+      if(correct){
+        stats.coinCorrect += 1;
+        addPlay(true, 1);
+        toast(`Correct. ${result} ✅`, "good");
+        pushHistory("coin", "Coin correct", `called ${call} · was ${result}`);
+        beep(760, 0.07);
       }else{
-        cdEl.textContent = COOLDOWN_MINUTES + "m";
-        regenBtn.disabled = false;
+        stats.coinWrong += 1;
+        addPlay(false, 1);
+        toast(`WRONG 😭 It was ${result}`, "bad");
+        pushHistory("coin", "Coin wrong", `called ${call} · was ${result}`);
+        beep(220, 0.08);
       }
-      requestAnimationFrame(updateCooldownUI);
+
+      bump($("#cardCoin"));
+      saveStats();
     }
 
-    // "Verify"
-    setTimeout(() => {
-      // Minimal gate: must have token param to proceed
-      if(!token || token.length < 6){
-        setVerified(false, "Open this page ONLY through the LootLabs link (missing token).");
-        lockUI("Missing token in URL. Go back and use the LootLabs link.");
+    // PICKER
+    function pick(){
+      const raw = $("#pickInput").value || "";
+      const items = raw.split(",").map(s => s.trim()).filter(Boolean);
+
+      if(items.length < 2){
+        toast("Give me at least 2 options, twin 😤", "bad");
+        bump($("#cardPick"));
         return;
       }
 
-      // Cooldown check
-      const left = msLeft();
-      if(left > 0){
-        setVerified(true, "You already claimed recently. Cooldown is still running.");
-        setCode("WAIT");
-        unlockUI();
-      }else{
-        setVerified(true, "You can now generate a code and redeem it in Discord.");
-        const c = genCode(8);
-        setCode(c);
-        unlockUI();
-        localStorage.setItem(LS_KEY, String(now()));
+      const out = $("#pickDisplay");
+      bump($("#cardPick"));
+
+      let i=0;
+      const spins = prefs.reducedMotion ? 6 : 18;
+      const timer = setInterval(()=>{
+        out.textContent = items[i % items.length];
+        beep(420 + (i*8), 0.02);
+        i++;
+        if(i>=spins){
+          clearInterval(timer);
+          const choice = items[rand(0, items.length-1)];
+          out.textContent = choice;
+          $("#pickLast").textContent = choice;
+
+          addPlay(true, 1);
+          toast(`Fate picked: ${choice}`, "accent");
+          pushHistory("pick", "Picker chose", choice);
+          beep(880, 0.06);
+
+          saveStats();
+        }
+      }, prefs.reducedMotion ? 70 : 60);
+    }
+
+    // CHAOS
+    async function chaos(){
+      const effects = [
+        async()=>{ toast("CHAOS: Auto spin x10 😈"); await auto10(); },
+        async()=>{ toast("CHAOS: Dice spree (5)"); pushHistory("sys","Chaos","Dice spree x5"); for(let i=0;i<5;i++){ rollDice(); await wait(120);} },
+        async()=>{ toast("CHAOS: Coin roulette (7)"); pushHistory("sys","Chaos","Coin roulette x7"); const calls=["Heads","Tails"]; for(let i=0;i<7;i++){ flip(calls[rand(0,1)]); await wait(110);} },
+        async()=>{ toast("CHAOS: Free streak point 😎","good"); stats.streak += 1; stats.bestStreak = Math.max(stats.bestStreak, stats.streak); pushHistory("sys","Chaos","Free streak +1"); saveStats(); beep(860,0.08); },
+      ];
+      bump($("#btnChaos"));
+      await effects[rand(0, effects.length-1)]();
+    }
+
+    // =======================
+    // render
+    // =======================
+    function renderStats(){
+      $("#statPlaysTop").textContent = stats.plays;
+      $("#statBestTop").textContent = `best streak: ${stats.bestStreak}`;
+
+      $("#slotWins").textContent = stats.slotWins;
+      $("#diceCrits").textContent = stats.diceCrits;
+
+      const avg = avgD20();
+      $("#diceAvgHome").textContent = avg ? avg.toFixed(2) : "—";
+
+      const acc = coinAcc();
+      const totalFlips = stats.coinCorrect + stats.coinWrong;
+      $("#coinCorrect").textContent = stats.coinCorrect;
+      $("#coinWrong").textContent = stats.coinWrong;
+      $("#coinAccHome").textContent = totalFlips ? `${Math.round(acc*100)}%` : "—";
+
+      // dashboard
+      $("#dPlays").textContent = stats.plays;
+      $("#dStreak").textContent = stats.streak;
+      $("#dBest").textContent = stats.bestStreak;
+      $("#dSlotWins").textContent = stats.slotWins;
+      $("#dCrits").textContent = stats.diceCrits;
+      $("#dAvg20").textContent = avg ? avg.toFixed(2) : "—";
+      $("#dAcc").textContent = totalFlips ? `${Math.round(acc*100)}%` : "—";
+      $("#dHistCount").textContent = history.length;
+    }
+
+    function renderHistory(){
+      const list = $("#historyList");
+      list.innerHTML = "";
+
+      if(history.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "event";
+        empty.innerHTML = `
+          <div class="left">
+            <div class="badge">🫥</div>
+            <div class="txt">
+              <b>No history yet</b>
+              <small>Go click something on Home, twin</small>
+            </div>
+          </div>
+          <div class="right">—</div>
+        `;
+        list.appendChild(empty);
+        renderStats();
+        return;
       }
 
-      updateCooldownUI();
-      statusEl.innerHTML = `Redeem in Discord: <b>${cmdEl.textContent}</b>`;
-    }, 900);
+      for(const e of history){
+        const item = document.createElement("div");
+        item.className = "event";
 
-    copyBtn.addEventListener("click", async () => {
-      const c = codeEl.textContent;
-      if(!c || c === "LOCKED" || c === "WAIT") return;
-      try{
-        await navigator.clipboard.writeText(c);
-        statusEl.innerHTML = `<span class="ok">✅ Copied!</span> Now run <b>/entercode ${c}</b> in Discord.`;
-      }catch{
-        statusEl.innerHTML = `Copy manually: <b>${c}</b>`;
+        const icon =
+          e.kind === "slot" ? "🎰" :
+          e.kind === "dice" ? "🎲" :
+          e.kind === "coin" ? "🪙" :
+          e.kind === "pick" ? "🎯" : "🧪";
+
+        item.innerHTML = `
+          <div class="left">
+            <div class="badge">${icon}</div>
+            <div class="txt">
+              <b>${escapeHTML(e.title)}</b>
+              <small>${escapeHTML(e.detail || "")}</small>
+            </div>
+          </div>
+          <div class="right">${fmtTime(e.t)}</div>
+        `;
+        list.appendChild(item);
       }
-    });
 
-    regenBtn.addEventListener("click", () => {
-      const left = msLeft();
-      if(left > 0) return;
-      const c = genCode(8);
-      setCode(c);
-      localStorage.setItem(LS_KEY, String(now()));
-      statusEl.innerHTML = `New code ready: <b>/entercode ${c}</b>`;
-    });
+      renderStats();
+    }
+
+    function escapeHTML(s){
+      return String(s).replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+
+    // =======================
+    // controls
+    // =======================
+    function resetAll(){
+      localStorage.removeItem(LS_STATS);
+      localStorage.removeItem(LS_HIST);
+
+      Object.assign(stats, {
+        plays:0, streak:0, bestStreak:0,
+        slotWins:0,
+        diceCrits:0, d20Sum:0, d20Count:0,
+        coinCorrect:0, coinWrong:0
+      });
+
+      history.length = 0;
+
+      saveStats();
+      renderHistory();
+      toast("Reset complete. Fresh slate 🧼", "accent");
+      pushHistory("sys", "Reset", "All stats cleared");
+    }
+
+    function clearHistory(){
+      history.length = 0;
+      localStorage.setItem(LS_HIST, JSON.stringify(history));
+      renderHistory();
+      toast("History cleared", "accent");
+    }
+
+    function toggleMotion(){
+      prefs.reducedMotion = !prefs.reducedMotion;
+      localStorage.setItem(LS_PREF, JSON.stringify(prefs));
+      document.body.classList.toggle("reduced", prefs.reducedMotion);
+      toast(prefs.reducedMotion ? "Reduced motion: ON" : "Reduced motion: OFF", "accent");
+      pushHistory("sys", "Settings", prefs.reducedMotion ? "Reduced motion ON" : "Reduced motion OFF");
+    }
+
+    // =======================
+    // wire up
+    // =======================
+    $("#tabHome").addEventListener("click", ()=> setPage("home"));
+    $("#tabDash").addEventListener("click", ()=> setPage("dash"));
+
+    $("#btnSpin").addEventListener("click", spin);
+    $("#btnAuto").addEventListener("click", auto10);
+
+    $("#btnRoll").addEventListener("click", rollDice);
+    $("#btnRoll20").addEventListener("click", rollD20Only);
+
+    $("#btnHeads").addEventListener("click", ()=> flip("Heads"));
+    $("#btnTails").addEventListener("click", ()=> flip("Tails"));
+
+    $("#btnPick").addEventListener("click", pick);
+    $("#pickInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") pick(); });
+
+    $("#btnChaos").addEventListener("click", chaos);
+
+    $("#btnReset").addEventListener("click", resetAll);
+    $("#btnClearHistory").addEventListener("click", clearHistory);
+    $("#btnToggleMotion").addEventListener("click", toggleMotion);
+
+    // init
+    saveStats();
+    renderHistory();
+    toast("Loaded. Go cause problems 🧪", "accent");
+    pushHistory("sys", "Loaded", "BM Fun Lab ready");
   </script>
 </body>
 </html>
