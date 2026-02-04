@@ -4,32 +4,39 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>BM Fun Lab</title>
-  <meta name="theme-color" content="#070a12" />
-
+  <meta name="theme-color" content="#050611" />
   <style>
     :root{
-      --bg0:#050814;
-      --bg1:#070a12;
+      /* ultra-dark base (no grey) */
+      --bg0:#03030a;
+      --bg1:#050611;
+      --bg2:#07081a;
 
-      --glass: rgba(255,255,255,.06);
-      --glass2: rgba(255,255,255,.10);
-      --stroke: rgba(255,255,255,.14);
-      --stroke2: rgba(120,160,255,.20);
+      /* glass */
+      --glassA: rgba(255,255,255,.045);
+      --glassB: rgba(255,255,255,.085);
+      --edge: rgba(255,255,255,.12);
+      --edge2: rgba(140,170,255,.18);
 
+      /* text */
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.62);
 
-      --accent: rgba(120,160,255,.95);
-      --accent2: rgba(170,120,255,.95);
-      --good: rgba(120,255,180,.95);
-      --bad: rgba(255,120,160,.95);
+      /* neon accents */
+      --a1: rgba(120,160,255,.95);
+      --a2: rgba(180,120,255,.95);
+      --good: rgba(120,255,190,.95);
+      --bad: rgba(255,120,170,.95);
 
-      --shadow: 0 18px 55px rgba(0,0,0,.55);
-      --shadow2: 0 10px 30px rgba(0,0,0,.35);
+      /* shadows */
+      --sh1: 0 18px 60px rgba(0,0,0,.62);
+      --sh2: 0 12px 32px rgba(0,0,0,.44);
+      --inset: inset 0 0 0 1px rgba(255,255,255,.035);
 
-      --r-xl: 26px;
-      --r-lg: 20px;
-      --r-md: 14px;
+      /* radius */
+      --r1: 26px;
+      --r2: 20px;
+      --r3: 14px;
 
       --blur: 16px;
     }
@@ -42,28 +49,31 @@
       color: var(--text);
       background:
         radial-gradient(1200px 800px at 18% -10%, rgba(120,160,255,.18), transparent 60%),
-        radial-gradient(900px 700px at 92% 10%, rgba(170,120,255,.16), transparent 55%),
-        radial-gradient(900px 700px at 50% 120%, rgba(120,255,180,.10), transparent 50%),
+        radial-gradient(900px 700px at 92% 10%, rgba(180,120,255,.16), transparent 55%),
+        radial-gradient(900px 700px at 50% 120%, rgba(120,255,190,.10), transparent 50%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow-x:hidden;
     }
 
-    /* animated grain + soft sheen */
+    /* premium grain (animated) */
     .noise{
       position:fixed; inset:0;
       pointer-events:none;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");
       mix-blend-mode: overlay;
-      opacity:.08;
+      opacity:.075;
       animation: drift 10s linear infinite;
     }
-    @keyframes drift { from{ transform:translate3d(0,0,0);} to{ transform:translate3d(-80px,30px,0);} }
+    @keyframes drift{ from{ transform:translate3d(0,0,0);} to{ transform:translate3d(-80px,30px,0);} }
 
+    /* soft sheen sweep */
     .sheen{
       position:fixed; inset:-30%;
       pointer-events:none;
-      background: radial-gradient(circle at 20% 10%, rgba(255,255,255,.07), transparent 40%),
-                  radial-gradient(circle at 70% 30%, rgba(255,255,255,.05), transparent 45%);
+      background:
+        radial-gradient(circle at 22% 12%, rgba(255,255,255,.08), transparent 42%),
+        radial-gradient(circle at 70% 32%, rgba(255,255,255,.055), transparent 46%),
+        radial-gradient(circle at 44% 70%, rgba(255,255,255,.035), transparent 46%);
       filter: blur(12px);
       opacity:.55;
       animation: floaty 8s ease-in-out infinite;
@@ -74,79 +84,79 @@
     }
 
     .wrap{
-      max-width:1150px;
+      max-width:1180px;
       margin:0 auto;
-      padding: 24px 16px 70px;
+      padding: 22px 16px 80px;
     }
 
-    /* top bar */
+    /* topbar */
     .topbar{
       display:flex;
-      gap:14px;
       align-items:center;
       justify-content:space-between;
+      gap:14px;
       flex-wrap:wrap;
-      margin-bottom:14px;
+      margin-bottom: 14px;
     }
-
     .brand{
       display:flex;
-      align-items:center;
       gap:12px;
+      align-items:center;
+      min-width: 260px;
     }
-
     .logo{
-      width:40px; height:40px;
-      border-radius:14px;
+      width:42px;height:42px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.14);
       background:
-        radial-gradient(circle at 30% 30%, rgba(120,160,255,.45), transparent 60%),
-        radial-gradient(circle at 70% 70%, rgba(170,120,255,.30), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.16);
-      box-shadow: var(--shadow2);
+        radial-gradient(circle at 30% 30%, rgba(120,160,255,.48), transparent 62%),
+        radial-gradient(circle at 70% 70%, rgba(180,120,255,.32), transparent 58%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      box-shadow: var(--sh2);
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
       position:relative;
       overflow:hidden;
+      transform: translateZ(0);
     }
     .logo::after{
       content:"";
-      position:absolute; inset:-60%;
-      background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,.22), transparent 65%);
+      position:absolute; inset:-70%;
+      background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,.20), transparent 65%);
       transform: rotate(18deg);
       animation: shine 3.4s ease-in-out infinite;
       opacity:.6;
     }
     @keyframes shine{
-      0%,100%{ transform: translateX(-20%) rotate(18deg); opacity:.35; }
-      50%{ transform: translateX(22%) rotate(18deg); opacity:.65; }
+      0%,100%{ transform: translateX(-22%) rotate(18deg); opacity:.35; }
+      50%{ transform: translateX(26%) rotate(18deg); opacity:.68; }
     }
-
     .brand h1{
       margin:0;
-      font-size: clamp(18px, 2.3vw, 28px);
+      font-size: clamp(18px, 2.4vw, 28px);
       letter-spacing:.3px;
       line-height:1.05;
     }
     .brand p{
-      margin:2px 0 0;
+      margin:3px 0 0;
       color: var(--muted);
       font-size: 12.5px;
     }
 
     .nav{
       display:flex;
-      gap:10px;
       align-items:center;
+      gap:10px;
       flex-wrap:wrap;
     }
 
+    /* glass pill */
     .pill{
-      border:1px solid var(--stroke);
+      border:1px solid var(--edge);
       background:
-        radial-gradient(800px 220px at 15% 0%, rgba(255,255,255,.12), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
-      box-shadow: var(--shadow2);
+        radial-gradient(1100px 320px at 18% 0%, rgba(255,255,255,.10), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+      box-shadow: var(--sh2);
       padding:10px 12px;
       border-radius: 999px;
       display:flex;
@@ -154,69 +164,28 @@
       align-items:center;
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
-      transition: transform .18s ease, border-color .18s ease;
+      transition: transform .18s ease, border-color .18s ease, filter .18s ease;
+      user-select:none;
     }
     .pill:hover{
       transform: translateY(-1px);
-      border-color: var(--stroke2);
+      border-color: var(--edge2);
+      filter: brightness(1.02);
     }
-    .pill strong{ font-weight:800; }
+    .pill strong{ font-weight:900; }
     .pill small{ color:var(--muted); }
 
-    .btn{
-      appearance:none;
-      border:1px solid var(--stroke);
-      background:
-        radial-gradient(800px 220px at 15% 0%, rgba(255,255,255,.12), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      box-shadow: var(--shadow2);
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      user-select:none;
-
-      transition:
-        transform .16s ease,
-        border-color .16s ease,
-        box-shadow .16s ease,
-        filter .16s ease;
-      will-change: transform;
-    }
-    .btn:hover{
-      transform: translateY(-1px);
-      border-color: var(--stroke2);
-      box-shadow: 0 14px 40px rgba(0,0,0,.42);
-      filter: brightness(1.03);
-    }
-    .btn:active{ transform: translateY(0px) scale(.98); }
-    .btn.primary{
-      border-color: rgba(120,160,255,.35);
-      background:
-        radial-gradient(900px 240px at 20% 0%, rgba(120,160,255,.22), transparent 65%),
-        linear-gradient(180deg, rgba(120,160,255,.22), rgba(255,255,255,.04));
-    }
-    .btn.danger{
-      border-color: rgba(255,120,160,.35);
-      background:
-        radial-gradient(900px 240px at 20% 0%, rgba(255,120,160,.18), transparent 65%),
-        linear-gradient(180deg, rgba(255,120,160,.18), rgba(255,255,255,.04));
-    }
-    .btn.ghost{
-      background: rgba(255,255,255,.04);
-    }
-
+    /* segmented tabs */
     .seg{
-      display:flex; gap:6px;
+      display:flex;
+      gap:6px;
       padding:6px;
       border-radius: 999px;
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
+      background: rgba(0,0,0,.22);
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+      box-shadow: var(--inset);
     }
     .seg button{
       border:0;
@@ -225,55 +194,126 @@
       background: transparent;
       color: var(--muted);
       cursor:pointer;
-      transition: background .18s ease, color .18s ease, transform .18s ease;
-      font-weight:700;
+      transition: background .20s ease, color .20s ease, transform .20s ease;
+      font-weight:900;
       letter-spacing:.2px;
     }
     .seg button:hover{ transform: translateY(-1px); color: var(--text); }
     .seg button.active{
       color: var(--text);
       background:
-        radial-gradient(700px 210px at 20% 0%, rgba(120,160,255,.20), transparent 70%),
-        linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
-      box-shadow: 0 10px 22px rgba(0,0,0,.35);
-      border:1px solid rgba(120,160,255,.22);
+        radial-gradient(900px 260px at 20% 0%, rgba(120,160,255,.22), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      box-shadow: 0 16px 34px rgba(0,0,0,.55);
+      border:1px solid rgba(140,170,255,.20);
+    }
+
+    /* buttons */
+    .btn{
+      appearance:none;
+      border:1px solid var(--edge);
+      background:
+        radial-gradient(1100px 320px at 18% 0%, rgba(255,255,255,.095), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: var(--r3);
+      cursor:pointer;
+      box-shadow: var(--sh2);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      user-select:none;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, filter .16s ease;
+      will-change: transform;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--edge2);
+      box-shadow: 0 18px 46px rgba(0,0,0,.55);
+      filter: brightness(1.03);
+    }
+    .btn:active{ transform: translateY(0) scale(.98); }
+    .btn.primary{
+      border-color: rgba(120,160,255,.32);
+      background:
+        radial-gradient(1200px 340px at 18% 0%, rgba(120,160,255,.24), transparent 65%),
+        linear-gradient(180deg, rgba(120,160,255,.20), rgba(255,255,255,.02));
+    }
+    .btn.danger{
+      border-color: rgba(255,120,170,.32);
+      background:
+        radial-gradient(1200px 340px at 18% 0%, rgba(255,120,170,.18), transparent 65%),
+        linear-gradient(180deg, rgba(255,120,170,.16), rgba(255,255,255,.02));
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.03);
     }
 
     /* layout */
+    .page{
+      opacity:0;
+      transform: translateY(10px) scale(.993);
+      pointer-events:none;
+      transition: opacity .24s ease, transform .24s ease;
+      will-change: opacity, transform;
+    }
+    .page.active{
+      opacity:1;
+      transform: translateY(0) scale(1);
+      pointer-events:auto;
+    }
+
     .grid{
       display:grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 14px;
       margin-top: 14px;
     }
-
     .card{
       grid-column: span 6;
-      border: 1px solid var(--stroke);
+      border: 1px solid rgba(255,255,255,.11);
       background:
-        radial-gradient(900px 500px at 10% 0%, rgba(255,255,255,.11), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
-      border-radius: var(--r-xl);
-      box-shadow: var(--shadow);
+        radial-gradient(1200px 520px at 12% 0%, rgba(255,255,255,.085), transparent 62%),
+        radial-gradient(900px 480px at 92% 10%, rgba(120,160,255,.08), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-radius: var(--r1);
+      box-shadow: var(--sh1);
       padding: 16px;
       position:relative;
       overflow:hidden;
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
       transform: translateZ(0);
-      transition: transform .20s ease, border-color .20s ease;
+      transition: transform .20s ease, border-color .20s ease, filter .20s ease;
     }
     .card:hover{
       transform: translateY(-2px);
-      border-color: var(--stroke2);
+      border-color: rgba(140,170,255,.18);
+      filter: brightness(1.02);
     }
+
+    /* glossy highlight line */
+    .card::before{
+      content:"";
+      position:absolute;
+      left:-20%;
+      top:-35%;
+      width:140%;
+      height:70%;
+      background: linear-gradient(120deg, transparent 38%, rgba(255,255,255,.14), transparent 62%);
+      transform: rotate(10deg);
+      opacity:.10;
+      pointer-events:none;
+    }
+
+    /* corner glow */
     .card::after{
       content:"";
       position:absolute;
-      inset:-60px -60px auto auto;
-      width:180px; height:180px;
-      background: radial-gradient(circle at 30% 30%, rgba(120,160,255,.35), transparent 65%);
-      filter: blur(6px);
+      inset:-70px -70px auto auto;
+      width:200px; height:200px;
+      background: radial-gradient(circle at 30% 30%, rgba(120,160,255,.30), transparent 65%);
+      filter: blur(8px);
       opacity:.55;
       transform: rotate(18deg);
       pointer-events:none;
@@ -305,22 +345,23 @@
     .display{
       width:100%;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.25);
+      background: rgba(0,0,0,.26);
       border-radius: 18px;
       padding: 14px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
-      min-height: 70px;
+      box-shadow: var(--inset);
+      min-height: 74px;
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
       position:relative;
       overflow:hidden;
+      transform: translateZ(0);
     }
     .display::before{
       content:"";
-      position:absolute; inset:-50%;
-      background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.10), transparent 42%);
+      position:absolute; inset:-60%;
+      background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.11), transparent 42%);
       opacity:.55;
       transform: rotate(12deg);
       pointer-events:none;
@@ -329,7 +370,8 @@
     .big{
       font-size: clamp(28px, 4vw, 46px);
       letter-spacing:.5px;
-      text-shadow: 0 8px 30px rgba(0,0,0,.55);
+      text-shadow: 0 10px 34px rgba(0,0,0,.65);
+      will-change: transform;
     }
     .glow{
       filter: drop-shadow(0 0 18px rgba(120,160,255,.35));
@@ -345,17 +387,21 @@
       flex-wrap:wrap;
     }
 
-    /* page transitions */
-    .page{
-      opacity:0;
-      transform: translateY(8px) scale(.995);
-      pointer-events:none;
-      transition: opacity .22s ease, transform .22s ease;
+    input, textarea{
+      outline:none;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.24);
+      color: var(--text);
+      border-radius: var(--r3);
+      padding: 10px 12px;
+      box-shadow: var(--inset);
+      transition: border-color .18s ease, transform .18s ease, filter .18s ease;
+      font: inherit;
     }
-    .page.active{
-      opacity:1;
-      transform: translateY(0) scale(1);
-      pointer-events:auto;
+    input:focus, textarea:focus{
+      border-color: rgba(120,160,255,.32);
+      transform: translateY(-1px);
+      filter: brightness(1.02);
     }
 
     /* dashboard */
@@ -367,40 +413,59 @@
     }
     .stat{
       grid-column: span 3;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: var(--r-lg);
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: var(--r2);
       background:
-        radial-gradient(800px 240px at 20% 0%, rgba(255,255,255,.10), transparent 70%),
-        rgba(0,0,0,.18);
+        radial-gradient(1200px 360px at 14% 0%, rgba(255,255,255,.075), transparent 70%),
+        rgba(0,0,0,.20);
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow2);
+      box-shadow: var(--sh2);
       padding: 14px;
-      transition: transform .18s ease, border-color .18s ease;
+      transition: transform .18s ease, border-color .18s ease, filter .18s ease;
     }
-    .stat:hover{ transform: translateY(-2px); border-color: rgba(120,160,255,.22); }
+    .stat:hover{
+      transform: translateY(-2px);
+      border-color: rgba(140,170,255,.18);
+      filter: brightness(1.02);
+    }
     .stat .k{ color: var(--muted); font-size:12px; margin-bottom:6px; }
-    .stat .v{ font-size: 22px; font-weight:900; letter-spacing:.3px; }
+    .stat .v{ font-size: 22px; font-weight:1000; letter-spacing:.3px; }
 
     .panel{
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: var(--r-xl);
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: var(--r1);
       background:
-        radial-gradient(900px 360px at 10% 0%, rgba(255,255,255,.10), transparent 65%),
+        radial-gradient(1300px 520px at 12% 0%, rgba(255,255,255,.08), transparent 70%),
         rgba(0,0,0,.18);
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
+      box-shadow: var(--sh1);
       padding: 16px;
       margin-top: 14px;
+      overflow:hidden;
+      position:relative;
+    }
+    .panel::after{
+      content:"";
+      position:absolute;
+      inset:-80px auto auto -80px;
+      width:220px; height:220px;
+      background: radial-gradient(circle at 30% 30%, rgba(180,120,255,.22), transparent 65%);
+      filter: blur(10px);
+      opacity:.55;
+      pointer-events:none;
     }
 
     .history{
       display:flex;
       flex-direction:column;
       gap:10px;
-      margin-top:10px;
+      margin-top:10px hookup;
     }
+
+    .history{ margin-top: 12px; }
+
     .event{
       display:flex;
       align-items:center;
@@ -409,8 +474,15 @@
       padding: 12px 12px;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+      background: rgba(255,255,255,.03);
+      box-shadow: var(--inset);
+      transform: translateZ(0);
+      transition: transform .16s ease, border-color .16s ease, filter .16s ease;
+    }
+    .event:hover{
+      transform: translateY(-1px);
+      border-color: rgba(140,170,255,.16);
+      filter: brightness(1.02);
     }
     .event .left{
       display:flex;
@@ -423,8 +495,9 @@
       border-radius: 14px;
       display:grid;
       place-items:center;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.11);
+      background: rgba(0,0,0,.22);
+      box-shadow: var(--inset);
     }
     .event .txt{
       display:flex;
@@ -436,7 +509,7 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 60vw;
+      max-width: 62vw;
     }
     .event .txt small{ color:var(--muted); font-size:12px; }
     .event .right{
@@ -451,13 +524,13 @@
       left:50%;
       top:18px;
       transform: translateX(-50%) translateY(-6px);
-      border:1px solid var(--stroke);
+      border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(900px 220px at 20% 0%, rgba(255,255,255,.12), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+        radial-gradient(1300px 360px at 14% 0%, rgba(255,255,255,.10), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
       padding:10px 12px;
       border-radius: 999px;
-      box-shadow: var(--shadow);
+      box-shadow: var(--sh1);
       backdrop-filter: blur(var(--blur));
       -webkit-backdrop-filter: blur(var(--blur));
       opacity:0;
@@ -466,16 +539,13 @@
       display:flex;
       gap:10px;
       align-items:center;
-      z-index:10;
-      max-width:min(94vw, 820px);
+      z-index:30;
+      max-width:min(94vw, 900px);
     }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
     .dot{
       width:10px;height:10px;border-radius:999px;
-      background: var(--accent);
+      background: var(--a1);
       box-shadow: 0 0 18px rgba(120,160,255,.55);
       flex:0 0 auto;
     }
@@ -487,7 +557,7 @@
       white-space:nowrap;
     }
 
-    /* micro anims */
+    /* tiny animations */
     .shake{ animation: shake .34s ease; }
     @keyframes shake{
       0%,100%{ transform:translate3d(0,0,0); }
@@ -496,35 +566,18 @@
       60%{ transform:translate3d(-1px,-2px,0); }
       80%{ transform:translate3d(1px,2px,0); }
     }
-
     .pop{ animation: pop .22s ease; }
     @keyframes pop{
-      0%{ transform: scale(.98); filter: brightness(.98); }
+      0%{ transform: scale(.985); filter: brightness(.98); }
       100%{ transform: scale(1); filter: brightness(1.02); }
     }
 
-    .sr{ position:absolute; left:-9999px; }
-    input{
-      outline:none;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-      border-radius: var(--r-md);
-      padding: 10px 12px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
-      transition: border-color .18s ease, transform .18s ease;
-    }
-    input:focus{
-      border-color: rgba(120,160,255,.35);
-      transform: translateY(-1px);
-    }
-
-    @media (max-width: 960px){
-      .card{ grid-column: span 12; }
-      .stat{ grid-column: span 6; }
-    }
-    @media (max-width: 520px){
-      .stat{ grid-column: span 12; }
+    /* confetti canvas */
+    canvas#fx{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:25;
     }
 
     /* reduced motion */
@@ -533,12 +586,24 @@
       transition: none !important;
       scroll-behavior: auto !important;
     }
+
+    /* responsive */
+    @media (max-width: 960px){
+      .card{ grid-column: span 12; }
+      .stat{ grid-column: span 6; }
+    }
+    @media (max-width: 540px){
+      .stat{ grid-column: span 12; }
+    }
+
+    .sr{ position:absolute; left:-9999px; }
   </style>
 </head>
 
 <body>
   <div class="noise"></div>
   <div class="sheen"></div>
+  <canvas id="fx"></canvas>
 
   <div class="toast" id="toast" role="status" aria-live="polite">
     <div class="dot" id="toastDot"></div>
@@ -551,7 +616,7 @@
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1>BM Fun Lab 🧪</h1>
-          <p>dark glossy mini-games + stats dashboard</p>
+          <p>ultra-dark glass • games • dashboard • chaos</p>
         </div>
       </div>
 
@@ -561,28 +626,55 @@
           <button id="tabDash" role="tab" aria-selected="false">Dashboard</button>
         </div>
 
-        <div class="pill" title="Saved in your browser">
+        <div class="pill" title="Saved locally in your browser">
           <div>
             <div><strong id="statPlaysTop">0</strong> plays</div>
             <small id="statBestTop">best streak: 0</small>
           </div>
         </div>
 
-        <button class="btn" id="btnReset">Reset</button>
+        <button class="btn ghost" id="btnCopy">Copy link</button>
+        <button class="btn" id="btnSound">Sound: ON</button>
+        <button class="btn" id="btnMotion">Motion: ON</button>
+        <button class="btn danger" id="btnReset">Reset</button>
         <button class="btn primary" id="btnChaos">CHAOS</button>
       </div>
     </div>
 
-    <!-- HOME PAGE -->
+    <!-- HOME -->
     <section class="page active" id="pageHome">
       <div class="grid">
+        <!-- DAILY LUCK -->
+        <section class="card" id="cardLuck">
+          <h2>
+            <span>🍀 Daily Luck</span>
+            <span style="color:var(--muted); font-size:12px;">resets daily</span>
+          </h2>
+          <p class="sub">Your “today luck” is deterministic (same all day). Use it as your vibe meter.</p>
+
+          <div class="display">
+            <div class="big glow" id="luckDisplay">—</div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn primary" id="btnRecalcLuck">Re-check</button>
+            <div style="flex:1"></div>
+            <div style="color:var(--muted); font-size:13px;">seed: <strong id="luckSeed">—</strong></div>
+          </div>
+
+          <div class="tiny">
+            <span>hint: big wins sparkle more today</span>
+            <span>last: <strong id="luckLast">—</strong></span>
+          </div>
+        </section>
+
         <!-- SLOT -->
         <section class="card" id="cardSlot">
           <h2>
             <span>🎰 Emoji Slot</span>
             <span style="color:var(--muted); font-size:12px;">3 match = win</span>
           </h2>
-          <p class="sub">Pull the lever, twin. If all three emojis match you get a streak boost.</p>
+          <p class="sub">Pull the lever, twin. Triple match gives streak boost + confetti if it’s rare.</p>
 
           <div class="display">
             <div class="big glow" id="slotDisplay">🍒&nbsp;&nbsp;🍋&nbsp;&nbsp;🍇</div>
@@ -597,7 +689,7 @@
 
           <div class="tiny">
             <span>streak bonus: <strong id="slotStreakBonus">x1</strong></span>
-            <span>last result: <strong id="slotLast">—</strong></span>
+            <span>last: <strong id="slotLast">—</strong></span>
           </div>
         </section>
 
@@ -607,7 +699,7 @@
             <span>🎲 Dice Roll</span>
             <span style="color:var(--muted); font-size:12px;">d6 + d20</span>
           </h2>
-          <p class="sub">If d6 hits 6 it “crits” and boosts your streak. Otherwise it’s a tragic roll.</p>
+          <p class="sub">d6=6 is a crit (boosts streak). d20 average tracked on the dashboard.</p>
 
           <div class="display">
             <div class="big" id="diceDisplay">d6: 1 · d20: 1</div>
@@ -632,7 +724,7 @@
             <span>🪙 Coin Flip</span>
             <span style="color:var(--muted); font-size:12px;">pick a side</span>
           </h2>
-          <p class="sub">Call it right and your streak climbs. Call it wrong and it’s over for you.</p>
+          <p class="sub">Heads/Tails. Track accuracy. Wrong guesses reset streak (harsh but fair).</p>
 
           <div class="display">
             <div class="big" id="coinDisplay">—</div>
@@ -657,7 +749,7 @@
             <span>🎯 Random Picker</span>
             <span style="color:var(--muted); font-size:12px;">wheel-ish</span>
           </h2>
-          <p class="sub">Throw options in, fate chooses. Perfect for “what do I do rn”.</p>
+          <p class="sub">Comma-separated options. Fate chooses. (Enter key works)</p>
 
           <div class="row">
             <label class="sr" for="pickInput">Options</label>
@@ -670,14 +762,64 @@
           </div>
 
           <div class="tiny">
-            <span>tip: separate with commas</span>
+            <span>tip: add 5+ options for drama</span>
             <span>last: <strong id="pickLast">—</strong></span>
+          </div>
+        </section>
+
+        <!-- REACTION TIME -->
+        <section class="card" id="cardReact">
+          <h2>
+            <span>⚡ Reaction Time</span>
+            <span style="color:var(--muted); font-size:12px;">tap on green</span>
+          </h2>
+          <p class="sub">Press start. Wait… then click the display the instant it turns green. (Too early = fail)</p>
+
+          <div class="display" id="reactPad" style="cursor:pointer;">
+            <div class="big" id="reactDisplay">Start →</div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn primary" id="btnReactStart">Start</button>
+            <button class="btn" id="btnReactReset">Reset best</button>
+            <div style="flex:1"></div>
+            <div style="color:var(--muted); font-size:13px;">best: <strong id="reactBest">—</strong></div>
+          </div>
+
+          <div class="tiny">
+            <span>last: <strong id="reactLast">—</strong></span>
+            <span>fails: <strong id="reactFails">0</strong></span>
+          </div>
+        </section>
+
+        <!-- CLICKER -->
+        <section class="card" id="cardClick">
+          <h2>
+            <span>🖱️ Clicker (10s)</span>
+            <span style="color:var(--muted); font-size:12px;">CPS challenge</span>
+          </h2>
+          <p class="sub">Hit start then spam click the display for 10 seconds. It tracks your best CPS.</p>
+
+          <div class="display" id="clickPad" style="cursor:pointer;">
+            <div class="big" id="clickDisplay">Start →</div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <button class="btn primary" id="btnClickStart">Start</button>
+            <button class="btn" id="btnClickReset">Reset best</button>
+            <div style="flex:1"></div>
+            <div style="color:var(--muted); font-size:13px;">best CPS: <strong id="clickBest">—</strong></div>
+          </div>
+
+          <div class="tiny">
+            <span>time: <strong id="clickTime">—</strong></span>
+            <span>clicks: <strong id="clickCount">0</strong></span>
           </div>
         </section>
       </div>
     </section>
 
-    <!-- DASHBOARD PAGE -->
+    <!-- DASHBOARD -->
     <section class="page" id="pageDash">
       <div class="statgrid">
         <div class="stat"><div class="k">Plays</div><div class="v" id="dPlays">0</div></div>
@@ -688,18 +830,24 @@
         <div class="stat"><div class="k">Dice crits</div><div class="v" id="dCrits">0</div></div>
         <div class="stat"><div class="k">Avg d20</div><div class="v" id="dAvg20">—</div></div>
         <div class="stat"><div class="k">Coin accuracy</div><div class="v" id="dAcc">—</div></div>
+        <div class="stat"><div class="k">Daily Luck</div><div class="v" id="dLuck">—</div></div>
+
+        <div class="stat"><div class="k">Best reaction</div><div class="v" id="dReact">—</div></div>
+        <div class="stat"><div class="k">Best CPS</div><div class="v" id="dCps">—</div></div>
         <div class="stat"><div class="k">History</div><div class="v" id="dHistCount">0</div></div>
+        <div class="stat"><div class="k">Sound</div><div class="v" id="dSound">ON</div></div>
       </div>
 
       <div class="panel">
         <div class="row" style="justify-content:space-between;">
           <div>
-            <div style="font-weight:900; letter-spacing:.2px;">Recent Activity</div>
-            <div style="color:var(--muted); font-size:12.5px; margin-top:2px;">Last 20 actions saved locally</div>
+            <div style="font-weight:1000; letter-spacing:.2px;">Activity + Tools</div>
+            <div style="color:var(--muted); font-size:12.5px; margin-top:2px;">Everything is local-only (no tracking)</div>
           </div>
           <div class="row">
             <button class="btn ghost" id="btnClearHistory">Clear history</button>
-            <button class="btn" id="btnToggleMotion">Toggle reduced motion</button>
+            <button class="btn" id="btnExport">Export save</button>
+            <button class="btn" id="btnImport">Import save</button>
           </div>
         </div>
 
@@ -708,64 +856,25 @@
     </section>
 
     <p style="margin:18px 2px 0; color:var(--muted); font-size:13px;">
-      Tip: This site saves stats + history in <b>your browser</b> (localStorage). No servers. No tracking. Just vibes.
+      Keyboard: <b>H</b>=Home, <b>D</b>=Dashboard, <b>S</b>=Spin, <b>R</b>=Roll, <b>C</b>=Chaos.
     </p>
   </div>
 
   <script>
     // =======================
-    // helpers
+    // small helpers
     // =======================
     const $ = (q) => document.querySelector(q);
     const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
     const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const wait = (ms) => new Promise(r => setTimeout(r, ms));
 
-    function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-    // micro beep (no assets)
-    function beep(freq=520, dur=0.06){
-      try{
-        const ctx = beep.ctx || (beep.ctx = new (window.AudioContext || window.webkitAudioContext)());
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = "sine";
-        o.frequency.value = freq;
-        g.gain.value = 0.0001;
-        o.connect(g); g.connect(ctx.destination);
-        o.start();
-        const t = ctx.currentTime;
-        g.gain.exponentialRampToValueAtTime(0.06, t + 0.01);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-        o.stop(t + dur + 0.01);
-      }catch(e){}
+    function safeJSON(s){ try{ return s ? JSON.parse(s) : {}; }catch{ return {}; } }
+    function escapeHTML(s){
+      return String(s).replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
     }
-
-    function bump(el){
-      el.classList.remove("shake");
-      void el.offsetWidth;
-      el.classList.add("shake");
-    }
-
-    function toast(msg, kind="accent"){
-      const el = $("#toast");
-      const dot = $("#toastDot");
-      const out = $("#toastMsg");
-      out.textContent = msg;
-
-      let color = "var(--accent)";
-      if(kind==="good") color = "var(--good)";
-      if(kind==="bad") color = "var(--bad)";
-      dot.style.background = color;
-
-      el.classList.add("show");
-      clearTimeout(toast.t);
-      toast.t = setTimeout(()=> el.classList.remove("show"), 1700);
-    }
-
-    function safeJSON(s){
-      try{ return s ? JSON.parse(s) : {}; }catch{ return {}; }
-    }
-
     function nowISO(){ return new Date().toISOString(); }
     function fmtTime(iso){
       try{
@@ -775,11 +884,18 @@
     }
 
     // =======================
-    // storage
+    // prefs + storage
     // =======================
-    const LS_STATS = "bm_funlab_stats_v2";
-    const LS_HIST  = "bm_funlab_history_v2";
-    const LS_PREF  = "bm_funlab_prefs_v1";
+    const LS_STATS = "bm_funlab_stats_v3";
+    const LS_HIST  = "bm_funlab_history_v3";
+    const LS_PREF  = "bm_funlab_prefs_v2";
+    const LS_LUCK  = "bm_funlab_luck_v1";
+
+    const prefs = {
+      sound: true,
+      reducedMotion: false,
+      ...safeJSON(localStorage.getItem(LS_PREF))
+    };
 
     const stats = {
       plays: 0,
@@ -795,55 +911,145 @@
       coinCorrect: 0,
       coinWrong: 0,
 
+      reactBestMs: null,
+      reactFails: 0,
+
+      clickBestCps: null,
+
       ...safeJSON(localStorage.getItem(LS_STATS))
     };
 
-    const history = Array.isArray(safeJSON(localStorage.getItem(LS_HIST))) ? safeJSON(localStorage.getItem(LS_HIST)) : [];
-    const prefs = {
-      reducedMotion: false,
-      ...safeJSON(localStorage.getItem(LS_PREF))
-    };
+    const history = Array.isArray(safeJSON(localStorage.getItem(LS_HIST)))
+      ? safeJSON(localStorage.getItem(LS_HIST))
+      : [];
 
-    // apply reduced motion
     if(prefs.reducedMotion) document.body.classList.add("reduced");
 
-    function pushHistory(kind, title, detail){
-      history.unshift({
-        t: nowISO(),
-        kind,
-        title,
-        detail: detail || ""
-      });
-      if(history.length > 20) history.length = 20;
-      localStorage.setItem(LS_HIST, JSON.stringify(history));
-      renderHistory();
+    function savePrefs(){
+      localStorage.setItem(LS_PREF, JSON.stringify(prefs));
+      $("#btnSound").textContent = `Sound: ${prefs.sound ? "ON" : "OFF"}`;
+      $("#btnMotion").textContent = `Motion: ${prefs.reducedMotion ? "OFF" : "ON"}`;
     }
 
     function saveStats(){
       localStorage.setItem(LS_STATS, JSON.stringify(stats));
-      renderStats();
+      renderAll();
     }
 
-    function addPlay(win, boost=1){
-      stats.plays += 1;
-      if(win){
-        stats.streak += boost;
-        stats.streak = Math.floor(stats.streak);
-        stats.bestStreak = Math.max(stats.bestStreak, stats.streak);
-      } else {
-        stats.streak = 0;
+    function pushHistory(kind, title, detail){
+      history.unshift({ t: nowISO(), kind, title, detail: detail || "" });
+      if(history.length > 24) history.length = 24;
+      localStorage.setItem(LS_HIST, JSON.stringify(history));
+      // only render if dashboard visible to avoid extra DOM work
+      if($("#pageDash").classList.contains("active")) renderHistory();
+      $("#dHistCount").textContent = history.length;
+    }
+
+    // =======================
+    // toast
+    // =======================
+    function toast(msg, kind="accent"){
+      const el = $("#toast");
+      const dot = $("#toastDot");
+      const out = $("#toastMsg");
+      out.textContent = msg;
+
+      let color = getComputedStyle(document.documentElement).getPropertyValue("--a1").trim();
+      if(kind==="good") color = getComputedStyle(document.documentElement).getPropertyValue("--good").trim();
+      if(kind==="bad") color = getComputedStyle(document.documentElement).getPropertyValue("--bad").trim();
+
+      dot.style.background = color;
+      dot.style.boxShadow = `0 0 18px ${color}`;
+
+      el.classList.add("show");
+      clearTimeout(toast.t);
+      toast.t = setTimeout(()=> el.classList.remove("show"), 1650);
+    }
+
+    // =======================
+    // micro audio (optimized)
+    // =======================
+    let audioCtx = null;
+    function beep(freq=520, dur=0.06){
+      if(!prefs.sound) return;
+      try{
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = "sine";
+        o.frequency.value = freq;
+        g.gain.value = 0.0001;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        const t = audioCtx.currentTime;
+        g.gain.exponentialRampToValueAtTime(0.055, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.stop(t + dur + 0.01);
+      }catch(e){}
+    }
+
+    function bump(el){
+      el.classList.remove("shake");
+      void el.offsetWidth;
+      el.classList.add("shake");
+    }
+
+    // =======================
+    // confetti (canvas, no libs)
+    // =======================
+    const fx = $("#fx");
+    const fxc = fx.getContext("2d");
+    let confetti = [];
+    function resizeFx(){
+      fx.width = window.innerWidth * devicePixelRatio;
+      fx.height = window.innerHeight * devicePixelRatio;
+      fx.style.width = window.innerWidth + "px";
+      fx.style.height = window.innerHeight + "px";
+      fxc.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    }
+    window.addEventListener("resize", resizeFx, {passive:true});
+    resizeFx();
+
+    function burstConfetti(x, y, power=1){
+      if(prefs.reducedMotion) return;
+      const n = Math.floor(80 * power);
+      for(let i=0;i<n;i++){
+        confetti.push({
+          x, y,
+          vx: (Math.random()*2-1) * (4 + Math.random()*6) * power,
+          vy: (Math.random()*2-1) * (6 + Math.random()*8) * power - 6,
+          r: 2 + Math.random()*3,
+          life: 70 + Math.random()*40,
+          hue: Math.random() < 0.5 ? 210 : 275
+        });
       }
-      saveStats();
     }
 
-    function avgD20(){
-      return stats.d20Count ? (stats.d20Sum / stats.d20Count) : null;
+    function tickFx(){
+      if(confetti.length){
+        fxc.clearRect(0,0,fx.width,fx.height);
+        const next = [];
+        for(const p of confetti){
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.25;
+          p.vx *= 0.99;
+          p.life -= 1;
+          const a = Math.max(0, Math.min(1, p.life / 90));
+          fxc.globalAlpha = a;
+          fxc.fillStyle = `hsla(${p.hue}, 95%, 70%, ${a})`;
+          fxc.fillRect(p.x, p.y, p.r, p.r*1.6);
+          if(p.life > 0 && p.y < window.innerHeight + 40) next.push(p);
+        }
+        confetti = next;
+        fxc.globalAlpha = 1;
+      }else{
+        // very cheap clear if nothing
+        fxc.clearRect(0,0,fx.width,fx.height);
+      }
+      requestAnimationFrame(tickFx);
     }
-
-    function coinAcc(){
-      const total = stats.coinCorrect + stats.coinWrong;
-      return total ? (stats.coinCorrect / total) : null;
-    }
+    requestAnimationFrame(tickFx);
 
     // =======================
     // pages
@@ -853,11 +1059,10 @@
       const dash = $("#pageDash");
       const tHome = $("#tabHome");
       const tDash = $("#tabDash");
-
       const isHome = which === "home";
+
       home.classList.toggle("active", isHome);
       dash.classList.toggle("active", !isHome);
-
       tHome.classList.toggle("active", isHome);
       tDash.classList.toggle("active", !isHome);
 
@@ -868,40 +1073,122 @@
     }
 
     // =======================
-    // games
+    // deterministic daily luck
     // =======================
-    // SLOT
-    const EMOJIS = ["🍒","🍋","🍇","🍉","⭐","💎","🔥","🧊","🍀","👑"];
+    function ymd(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      return `${y}-${m}-${day}`;
+    }
+    function hash32(str){
+      // fast tiny hash
+      let h = 2166136261;
+      for(let i=0;i<str.length;i++){
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    }
+    function getDailyLuck(){
+      const key = ymd();
+      const saved = safeJSON(localStorage.getItem(LS_LUCK));
+      if(saved && saved.key === key) return saved;
+
+      // seed uses day + a little browser fingerprint-ish but harmless
+      const seedBase = key + "|" + navigator.userAgent.length + "|" + (screen.width + "x" + screen.height);
+      const seed = hash32(seedBase);
+      // 0..100
+      const score = seed % 101;
+
+      const pack = { key, seed, score };
+      localStorage.setItem(LS_LUCK, JSON.stringify(pack));
+      return pack;
+    }
+
+    function luckLabel(score){
+      if(score >= 95) return `💎 GOD TIER (${score}/100)`;
+      if(score >= 85) return `🔥 INSANE (${score}/100)`;
+      if(score >= 70) return `✨ GOOD (${score}/100)`;
+      if(score >= 50) return `🙂 NORMAL (${score}/100)`;
+      if(score >= 30) return `😐 LOW (${score}/100)`;
+      return `🥀 CURSED (${score}/100)`;
+    }
+
+    // =======================
+    // core play logic
+    // =======================
+    function addPlay(win, boost=1){
+      stats.plays += 1;
+      if(win){
+        stats.streak += boost;
+        stats.streak = Math.floor(stats.streak);
+        stats.bestStreak = Math.max(stats.bestStreak, stats.streak);
+      }else{
+        stats.streak = 0;
+      }
+      saveStats();
+    }
+
+    function avgD20(){
+      return stats.d20Count ? (stats.d20Sum / stats.d20Count) : null;
+    }
+    function coinAcc(){
+      const total = stats.coinCorrect + stats.coinWrong;
+      return total ? (stats.coinCorrect / total) : null;
+    }
+
+    // =======================
+    // GAMES
+    // =======================
+    // SLOT (rarity weighting)
+    // More dramatic: common emojis more likely; rare ones (💎👑) less likely
+    const SLOT_POOL = [
+      "🍒","🍒","🍒","🍒",
+      "🍋","🍋","🍋",
+      "🍇","🍇",
+      "🍉","🍉",
+      "⭐",
+      "🔥",
+      "🧊",
+      "🍀",
+      "👑",
+      "💎"
+    ];
     let slotBusy = false;
 
     function slotBonus(){
-      const b = 1 + Math.floor(stats.streak / 5);
-      return clamp(b, 1, 4);
+      // streak -> boost 1..4
+      return clamp(1 + Math.floor(stats.streak / 5), 1, 4);
     }
-    function slotSpinOnce(){
-      const a = EMOJIS[rand(0, EMOJIS.length-1)];
-      const b = EMOJIS[rand(0, EMOJIS.length-1)];
-      const c = EMOJIS[rand(0, EMOJIS.length-1)];
-      return [a,b,c];
+
+    function pickSlot(){
+      // daily luck nudges rare picks slightly
+      const { score } = getDailyLuck();
+      const luck = score / 100; // 0..1
+      // small chance to bias toward last items (rare)
+      if(Math.random() < 0.06 * luck){
+        return SLOT_POOL[rand(Math.floor(SLOT_POOL.length*0.65), SLOT_POOL.length-1)];
+      }
+      return SLOT_POOL[rand(0, SLOT_POOL.length-1)];
     }
 
     async function spin(){
       if(slotBusy) return;
       slotBusy = true;
+      bump($("#cardSlot"));
 
       const disp = $("#slotDisplay");
-      const card = $("#cardSlot");
-      bump(card);
-
       const frames = prefs.reducedMotion ? 6 : 18;
       for(let i=0;i<frames;i++){
-        const [a,b,c] = slotSpinOnce();
+        const a = pickSlot(), b = pickSlot(), c = pickSlot();
         disp.innerHTML = `${a}&nbsp;&nbsp;${b}&nbsp;&nbsp;${c}`;
         beep(420 + i*10, 0.025);
-        await wait(prefs.reducedMotion ? 35 : (26 + i*4));
+        await wait(prefs.reducedMotion ? 40 : (26 + i*4));
       }
 
-      const [a,b,c] = slotSpinOnce();
+      const a = pickSlot(), b = pickSlot(), c = pickSlot();
       disp.innerHTML = `${a}&nbsp;&nbsp;${b}&nbsp;&nbsp;${c}`;
 
       const win = (a===b && b===c);
@@ -910,20 +1197,31 @@
 
       if(win){
         stats.slotWins += 1;
+
+        const rareWin = (a === "💎" || a === "👑");
         addPlay(true, bonus);
-        $("#slotLast").textContent = "WIN";
-        toast(`JACKPOT ${a}${b}${c} (+streak x${bonus})`, "good");
-        pushHistory("slot", "Slot JACKPOT", `${a}${b}${c} · bonus x${bonus}`);
-        beep(880, 0.08); beep(990, 0.08);
-      } else {
+
+        $("#slotLast").textContent = rareWin ? "RARE WIN" : "WIN";
+        toast(rareWin ? `RARE JACKPOT ${a}${b}${c} (+x${bonus})` : `JACKPOT ${a}${b}${c} (+x${bonus})`, "good");
+        pushHistory("slot", rareWin ? "Slot RARE JACKPOT" : "Slot JACKPOT", `${a}${b}${c} · bonus x${bonus}`);
+
+        if(rareWin){
+          const r = disp.getBoundingClientRect();
+          burstConfetti(r.left + r.width/2, r.top + r.height/2, 1.25);
+          beep(920, 0.08); beep(1120, 0.08);
+        }else{
+          burstConfetti(window.innerWidth*0.5, 140, 0.75);
+          beep(820, 0.06); beep(980, 0.06);
+        }
+      }else{
         addPlay(false, 1);
         $("#slotLast").textContent = "loss";
-        toast(`Nope… you got ${a}${b}${c}`, "bad");
+        toast(`Nope… ${a}${b}${c}`, "bad");
         pushHistory("slot", "Slot miss", `${a}${b}${c}`);
-        beep(180, 0.08);
+        beep(190, 0.08);
       }
 
-      saveStats();
+      $("#slotWins").textContent = stats.slotWins;
       slotBusy = false;
     }
 
@@ -933,7 +1231,7 @@
       pushHistory("sys", "Auto spin", "x10");
       for(let i=0;i<10;i++){
         await spin();
-        await wait(prefs.reducedMotion ? 70 : 120);
+        await wait(prefs.reducedMotion ? 80 : 120);
       }
     }
 
@@ -954,14 +1252,15 @@
         addPlay(true, 2);
         toast("CRIT! d6 hit 6 (+streak boost)", "good");
         pushHistory("dice", "Dice CRIT", `d6=6 · d20=${d20}`);
-        beep(740, 0.08); beep(920, 0.08);
+        beep(760, 0.08); beep(980, 0.08);
       }else{
         addPlay(false, 1);
         toast("Rolled. No crit 😔", "accent");
         pushHistory("dice", "Dice roll", `d6=${d6} · d20=${d20}`);
-        beep(420, 0.06);
+        beep(440, 0.06);
       }
 
+      $("#diceCrits").textContent = stats.diceCrits;
       bump($("#cardDice"));
       saveStats();
     }
@@ -977,7 +1276,7 @@
       addPlay(true, 1);
       toast(`d20 says: ${d20}`, "accent");
       pushHistory("dice", "d20 solo", `d20=${d20}`);
-      beep(520, 0.06);
+      beep(560, 0.06);
 
       bump($("#cardDice"));
       saveStats();
@@ -995,7 +1294,7 @@
         addPlay(true, 1);
         toast(`Correct. ${result} ✅`, "good");
         pushHistory("coin", "Coin correct", `called ${call} · was ${result}`);
-        beep(760, 0.07);
+        beep(780, 0.06);
       }else{
         stats.coinWrong += 1;
         addPlay(false, 1);
@@ -1014,7 +1313,7 @@
       const items = raw.split(",").map(s => s.trim()).filter(Boolean);
 
       if(items.length < 2){
-        toast("Give me at least 2 options, twin 😤", "bad");
+        toast("Give at least 2 options, twin 😤", "bad");
         bump($("#cardPick"));
         return;
       }
@@ -1024,41 +1323,195 @@
 
       let i=0;
       const spins = prefs.reducedMotion ? 6 : 18;
-      const timer = setInterval(()=>{
+      const tick = () => {
         out.textContent = items[i % items.length];
         beep(420 + (i*8), 0.02);
         i++;
-        if(i>=spins){
-          clearInterval(timer);
+        if(i >= spins){
           const choice = items[rand(0, items.length-1)];
           out.textContent = choice;
           $("#pickLast").textContent = choice;
-
           addPlay(true, 1);
           toast(`Fate picked: ${choice}`, "accent");
           pushHistory("pick", "Picker chose", choice);
-          beep(880, 0.06);
+          beep(900, 0.06);
+          saveStats();
+          return;
+        }
+        setTimeout(tick, prefs.reducedMotion ? 70 : 58);
+      };
+      tick();
+    }
 
+    // REACTION TIME
+    let reactState = "idle"; // idle | waiting | go | done
+    let reactTimer = null;
+    let reactGoAt = 0;
+
+    function reactStart(){
+      if(reactState === "waiting" || reactState === "go") return;
+
+      reactState = "waiting";
+      $("#reactDisplay").textContent = "Wait…";
+      $("#reactLast").textContent = "—";
+      $("#reactPad").style.borderColor = "rgba(255,255,255,.10)";
+      $("#reactPad").style.background = "rgba(0,0,0,.26)";
+      bump($("#cardReact"));
+      beep(420,0.05);
+
+      const delay = (prefs.reducedMotion ? 700 : 900) + Math.random() * (prefs.reducedMotion ? 700 : 1900);
+      clearTimeout(reactTimer);
+      reactTimer = setTimeout(()=>{
+        reactState = "go";
+        reactGoAt = performance.now();
+        $("#reactDisplay").textContent = "NOW!";
+        // quick green-ish glow (inline style avoids adding more CSS)
+        $("#reactPad").style.borderColor = "rgba(120,255,190,.28)";
+        $("#reactPad").style.background = "rgba(0,0,0,.22)";
+        beep(880,0.05);
+      }, delay);
+    }
+
+    function reactTap(){
+      if(reactState === "idle"){
+        toast("Press Start first", "accent");
+        return;
+      }
+      if(reactState === "waiting"){
+        // too early
+        clearTimeout(reactTimer);
+        reactState = "done";
+        stats.reactFails = (stats.reactFails || 0) + 1;
+        $("#reactFails").textContent = stats.reactFails;
+        $("#reactDisplay").textContent = "Too early 💀";
+        $("#reactLast").textContent = "FAIL";
+        toast("Too early!", "bad");
+        pushHistory("react", "Reaction FAIL", "too early");
+        beep(180,0.08);
+        saveStats();
+        return;
+      }
+      if(reactState === "go"){
+        const ms = Math.max(0, Math.round(performance.now() - reactGoAt));
+        reactState = "done";
+        $("#reactDisplay").textContent = `${ms} ms`;
+        $("#reactLast").textContent = `${ms} ms`;
+        pushHistory("react", "Reaction", `${ms} ms`);
+        toast(`Reaction: ${ms} ms`, "good");
+        beep(740,0.06);
+
+        if(stats.reactBestMs == null || ms < stats.reactBestMs){
+          stats.reactBestMs = ms;
+          $("#reactBest").textContent = `${ms} ms`;
+          burstConfetti(window.innerWidth*0.5, 170, 0.7);
+          toast(`NEW BEST: ${ms} ms`, "good");
+          beep(980,0.06);
+          pushHistory("react", "New reaction best", `${ms} ms`);
+        }
+        saveStats();
+        return;
+      }
+    }
+
+    function reactReset(){
+      stats.reactBestMs = null;
+      stats.reactFails = 0;
+      $("#reactBest").textContent = "—";
+      $("#reactLast").textContent = "—";
+      $("#reactFails").textContent = "0";
+      $("#reactDisplay").textContent = "Start →";
+      toast("Reaction best reset", "accent");
+      pushHistory("react", "Reaction reset", "best cleared");
+      saveStats();
+    }
+
+    // CLICKER
+    let clickState = "idle"; // idle | running
+    let clickEndAt = 0;
+    let clickClicks = 0;
+    let clickTicker = null;
+
+    function clickStart(){
+      if(clickState === "running") return;
+      clickState = "running";
+      clickClicks = 0;
+      $("#clickCount").textContent = "0";
+      $("#clickDisplay").textContent = "CLICK!";
+      bump($("#cardClick"));
+      beep(520,0.05);
+
+      const dur = 10_000;
+      clickEndAt = performance.now() + dur;
+
+      clearInterval(clickTicker);
+      clickTicker = setInterval(()=>{
+        const left = Math.max(0, Math.ceil((clickEndAt - performance.now())/1000));
+        $("#clickTime").textContent = `${left}s`;
+        if(performance.now() >= clickEndAt){
+          clearInterval(clickTicker);
+          clickState = "idle";
+          $("#clickDisplay").textContent = "Start →";
+          $("#clickTime").textContent = "—";
+
+          const cps = clickClicks / 10;
+          const cpsText = cps.toFixed(2);
+          toast(`CPS: ${cpsText}`, "accent");
+          pushHistory("click", "Clicker finished", `${clickClicks} clicks · ${cpsText} CPS`);
+          beep(660,0.05);
+
+          if(stats.clickBestCps == null || cps > stats.clickBestCps){
+            stats.clickBestCps = cps;
+            $("#clickBest").textContent = cpsText;
+            burstConfetti(window.innerWidth*0.5, 170, 0.85);
+            toast(`NEW BEST CPS: ${cpsText}`, "good");
+            beep(980,0.06);
+            pushHistory("click", "New CPS best", cpsText);
+          }
           saveStats();
         }
-      }, prefs.reducedMotion ? 70 : 60);
+      }, 120);
+    }
+
+    function clickTap(){
+      if(clickState !== "running") return;
+      clickClicks++;
+      $("#clickCount").textContent = String(clickClicks);
+      // tiny audio without lag
+      if(clickClicks % 3 === 0) beep(520 + (clickClicks % 12) * 12, 0.015);
+    }
+
+    function clickReset(){
+      stats.clickBestCps = null;
+      $("#clickBest").textContent = "—";
+      toast("Clicker best reset", "accent");
+      pushHistory("click", "Clicker reset", "best cleared");
+      saveStats();
     }
 
     // CHAOS
     async function chaos(){
-      const effects = [
-        async()=>{ toast("CHAOS: Auto spin x10 😈"); await auto10(); },
-        async()=>{ toast("CHAOS: Dice spree (5)"); pushHistory("sys","Chaos","Dice spree x5"); for(let i=0;i<5;i++){ rollDice(); await wait(120);} },
-        async()=>{ toast("CHAOS: Coin roulette (7)"); pushHistory("sys","Chaos","Coin roulette x7"); const calls=["Heads","Tails"]; for(let i=0;i<7;i++){ flip(calls[rand(0,1)]); await wait(110);} },
-        async()=>{ toast("CHAOS: Free streak point 😎","good"); stats.streak += 1; stats.bestStreak = Math.max(stats.bestStreak, stats.streak); pushHistory("sys","Chaos","Free streak +1"); saveStats(); beep(860,0.08); },
-      ];
       bump($("#btnChaos"));
-      await effects[rand(0, effects.length-1)]();
+      const picks = [
+        async()=>{ toast("CHAOS: Auto spin x10 😈"); await auto10(); },
+        async()=>{ toast("CHAOS: Dice spree x5"); pushHistory("sys","Chaos","Dice spree x5"); for(let i=0;i<5;i++){ rollDice(); await wait(120);} },
+        async()=>{ toast("CHAOS: Coin roulette x7"); pushHistory("sys","Chaos","Coin roulette x7"); const calls=["Heads","Tails"]; for(let i=0;i<7;i++){ flip(calls[rand(0,1)]); await wait(110);} },
+        async()=>{ toast("CHAOS: Free streak +1 😎","good"); stats.streak += 1; stats.bestStreak = Math.max(stats.bestStreak, stats.streak); pushHistory("sys","Chaos","Free streak +1"); saveStats(); burstConfetti(window.innerWidth*0.5, 140, 0.7); beep(980,0.06); },
+        async()=>{ toast("CHAOS: Reaction start NOW"); pushHistory("sys","Chaos","Reaction start"); reactStart(); }
+      ];
+      await picks[rand(0, picks.length-1)]();
     }
 
     // =======================
-    // render
+    // dashboard + render
     // =======================
+    function renderLuck(){
+      const L = getDailyLuck();
+      $("#luckDisplay").textContent = luckLabel(L.score);
+      $("#luckSeed").textContent = String(L.seed).slice(0,8);
+      $("#luckLast").textContent = L.key;
+      $("#dLuck").textContent = `${L.score}/100`;
+    }
+
     function renderStats(){
       $("#statPlaysTop").textContent = stats.plays;
       $("#statBestTop").textContent = `best streak: ${stats.bestStreak}`;
@@ -1069,8 +1522,8 @@
       const avg = avgD20();
       $("#diceAvgHome").textContent = avg ? avg.toFixed(2) : "—";
 
-      const acc = coinAcc();
       const totalFlips = stats.coinCorrect + stats.coinWrong;
+      const acc = coinAcc();
       $("#coinCorrect").textContent = stats.coinCorrect;
       $("#coinWrong").textContent = stats.coinWrong;
       $("#coinAccHome").textContent = totalFlips ? `${Math.round(acc*100)}%` : "—";
@@ -1084,6 +1537,12 @@
       $("#dAvg20").textContent = avg ? avg.toFixed(2) : "—";
       $("#dAcc").textContent = totalFlips ? `${Math.round(acc*100)}%` : "—";
       $("#dHistCount").textContent = history.length;
+      $("#dSound").textContent = prefs.sound ? "ON" : "OFF";
+      $("#reactBest").textContent = stats.reactBestMs == null ? "—" : `${stats.reactBestMs} ms`;
+      $("#reactFails").textContent = String(stats.reactFails || 0);
+      $("#dReact").textContent = stats.reactBestMs == null ? "—" : `${stats.reactBestMs} ms`;
+      $("#clickBest").textContent = stats.clickBestCps == null ? "—" : stats.clickBestCps.toFixed(2);
+      $("#dCps").textContent = stats.clickBestCps == null ? "—" : stats.clickBestCps.toFixed(2);
     }
 
     function renderHistory(){
@@ -1098,13 +1557,12 @@
             <div class="badge">🫥</div>
             <div class="txt">
               <b>No history yet</b>
-              <small>Go click something on Home, twin</small>
+              <small>Go click stuff on Home, twin</small>
             </div>
           </div>
           <div class="right">—</div>
         `;
         list.appendChild(empty);
-        renderStats();
         return;
       }
 
@@ -1116,7 +1574,9 @@
           e.kind === "slot" ? "🎰" :
           e.kind === "dice" ? "🎲" :
           e.kind === "coin" ? "🪙" :
-          e.kind === "pick" ? "🎯" : "🧪";
+          e.kind === "pick" ? "🎯" :
+          e.kind === "react" ? "⚡" :
+          e.kind === "click" ? "🖱️" : "🧪";
 
         item.innerHTML = `
           <div class="left">
@@ -1130,20 +1590,88 @@
         `;
         list.appendChild(item);
       }
-
-      renderStats();
     }
 
-    function escapeHTML(s){
-      return String(s).replace(/[&<>"']/g, m => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[m]));
+    function renderAll(){
+      renderLuck();
+      renderStats();
+      if($("#pageDash").classList.contains("active")) renderHistory();
     }
 
     // =======================
-    // controls
+    // utils: export/import
+    // =======================
+    function exportSave(){
+      const payload = {
+        v: 1,
+        when: nowISO(),
+        prefs,
+        stats,
+        history,
+        luck: getDailyLuck()
+      };
+      const txt = JSON.stringify(payload, null, 2);
+
+      // copy to clipboard + fallback download
+      navigator.clipboard?.writeText(txt).then(()=>{
+        toast("Export copied to clipboard", "good");
+      }).catch(()=>{
+        toast("Export ready (couldn't auto-copy)", "accent");
+      });
+
+      // also download a file for convenience
+      const blob = new Blob([txt], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "bm_funlab_save.json";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+      pushHistory("sys","Export save","JSON");
+    }
+
+    function importSave(){
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "application/json";
+      input.onchange = async () => {
+        const f = input.files && input.files[0];
+        if(!f) return;
+        const txt = await f.text();
+        let obj;
+        try{ obj = JSON.parse(txt); }catch{ toast("Invalid JSON file", "bad"); return; }
+
+        if(!obj || typeof obj !== "object"){ toast("Invalid save", "bad"); return; }
+
+        // merge
+        if(obj.prefs) Object.assign(prefs, obj.prefs);
+        if(obj.stats) Object.assign(stats, obj.stats);
+        if(Array.isArray(obj.history)){
+          history.length = 0;
+          history.push(...obj.history.slice(0,24));
+        }
+
+        localStorage.setItem(LS_PREF, JSON.stringify(prefs));
+        localStorage.setItem(LS_STATS, JSON.stringify(stats));
+        localStorage.setItem(LS_HIST, JSON.stringify(history));
+
+        if(prefs.reducedMotion) document.body.classList.add("reduced");
+        else document.body.classList.remove("reduced");
+
+        savePrefs();
+        renderAll();
+        toast("Import complete ✅", "good");
+        pushHistory("sys","Import save","JSON");
+      };
+      input.click();
+    }
+
+    // =======================
+    // reset / toggles
     // =======================
     function resetAll(){
+      if(!confirm("Reset everything? (stats + history)")) return;
+
       localStorage.removeItem(LS_STATS);
       localStorage.removeItem(LS_HIST);
 
@@ -1151,15 +1679,16 @@
         plays:0, streak:0, bestStreak:0,
         slotWins:0,
         diceCrits:0, d20Sum:0, d20Count:0,
-        coinCorrect:0, coinWrong:0
+        coinCorrect:0, coinWrong:0,
+        reactBestMs:null, reactFails:0,
+        clickBestCps:null
       });
-
       history.length = 0;
 
       saveStats();
       renderHistory();
-      toast("Reset complete. Fresh slate 🧼", "accent");
-      pushHistory("sys", "Reset", "All stats cleared");
+      toast("Reset complete 🧼", "accent");
+      pushHistory("sys","Reset","All cleared");
     }
 
     function clearHistory(){
@@ -1167,14 +1696,37 @@
       localStorage.setItem(LS_HIST, JSON.stringify(history));
       renderHistory();
       toast("History cleared", "accent");
+      pushHistory("sys","History cleared","");
+    }
+
+    function toggleSound(){
+      prefs.sound = !prefs.sound;
+      savePrefs();
+      toast(prefs.sound ? "Sound ON" : "Sound OFF", "accent");
+      pushHistory("sys","Sound", prefs.sound ? "ON" : "OFF");
+      $("#dSound").textContent = prefs.sound ? "ON" : "OFF";
+      beep(700,0.04);
     }
 
     function toggleMotion(){
       prefs.reducedMotion = !prefs.reducedMotion;
-      localStorage.setItem(LS_PREF, JSON.stringify(prefs));
       document.body.classList.toggle("reduced", prefs.reducedMotion);
-      toast(prefs.reducedMotion ? "Reduced motion: ON" : "Reduced motion: OFF", "accent");
-      pushHistory("sys", "Settings", prefs.reducedMotion ? "Reduced motion ON" : "Reduced motion OFF");
+      savePrefs();
+      toast(prefs.reducedMotion ? "Motion OFF (reduced)" : "Motion ON", "accent");
+      pushHistory("sys","Motion", prefs.reducedMotion ? "Reduced" : "Full");
+      beep(520,0.04);
+    }
+
+    async function copyLink(){
+      const url = location.href;
+      try{
+        await navigator.clipboard.writeText(url);
+        toast("Link copied ✅", "good");
+        beep(820,0.04);
+      }catch{
+        toast("Couldn't copy (browser blocked)", "bad");
+      }
+      pushHistory("sys","Copy link", url);
     }
 
     // =======================
@@ -1182,6 +1734,8 @@
     // =======================
     $("#tabHome").addEventListener("click", ()=> setPage("home"));
     $("#tabDash").addEventListener("click", ()=> setPage("dash"));
+
+    $("#btnRecalcLuck").addEventListener("click", ()=>{ renderLuck(); toast("Luck checked", "accent"); pushHistory("luck","Daily luck checked", ymd()); beep(560,0.04); });
 
     $("#btnSpin").addEventListener("click", spin);
     $("#btnAuto").addEventListener("click", auto10);
@@ -1195,17 +1749,41 @@
     $("#btnPick").addEventListener("click", pick);
     $("#pickInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") pick(); });
 
-    $("#btnChaos").addEventListener("click", chaos);
+    $("#btnReactStart").addEventListener("click", reactStart);
+    $("#btnReactReset").addEventListener("click", reactReset);
+    $("#reactPad").addEventListener("click", reactTap);
 
+    $("#btnClickStart").addEventListener("click", clickStart);
+    $("#btnClickReset").addEventListener("click", clickReset);
+    $("#clickPad").addEventListener("click", clickTap);
+
+    $("#btnChaos").addEventListener("click", chaos);
     $("#btnReset").addEventListener("click", resetAll);
+
     $("#btnClearHistory").addEventListener("click", clearHistory);
-    $("#btnToggleMotion").addEventListener("click", toggleMotion);
+    $("#btnExport").addEventListener("click", exportSave);
+    $("#btnImport").addEventListener("click", importSave);
+
+    $("#btnSound").addEventListener("click", toggleSound);
+    $("#btnMotion").addEventListener("click", toggleMotion);
+    $("#btnCopy").addEventListener("click", copyLink);
+
+    // keyboard shortcuts
+    window.addEventListener("keydown", (e)=>{
+      if(e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+      const k = e.key.toLowerCase();
+      if(k === "h") setPage("home");
+      if(k === "d") setPage("dash");
+      if(k === "s") spin();
+      if(k === "r") rollDice();
+      if(k === "c") chaos();
+    }, {passive:true});
 
     // init
-    saveStats();
-    renderHistory();
-    toast("Loaded. Go cause problems 🧪", "accent");
-    pushHistory("sys", "Loaded", "BM Fun Lab ready");
+    savePrefs();
+    renderAll();
+    toast("Loaded. Go cause problems, twin 🧪", "accent");
+    pushHistory("sys","Loaded","BM Fun Lab ready");
   </script>
 </body>
 </html>
